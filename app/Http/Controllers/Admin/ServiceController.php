@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -14,7 +15,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        $services = Service::orderBy('order')->paginate(15);
+        $services = Service::orderBy('order')->paginate(10);
         return view('admin.services.index', compact('services'));
     }
 
@@ -31,24 +32,25 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'icon' => 'nullable|image|max:2048',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_active' => 'boolean',
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $service = new Service($request->except(['icon']));
+        $service->slug = Str::slug($request->title);
 
         if ($request->hasFile('icon')) {
-            $validated['icon'] = $request->file('icon')->store('services', 'public');
+            $service->icon = $request->file('icon')->store('icons', 'public');
         }
 
-        Service::create($validated);
+        $service->is_active = $request->has('is_active');
+        $service->save();
 
-        return redirect()->route('admin.services.index')
-            ->with('success', 'Service créé avec succès.');
+        return redirect()->route('admin.services.index')->with('success', 'Service créé avec succès.');
     }
 
     /**
@@ -56,6 +58,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
+        // Not typically used for simple CRUD, but can be implemented if needed.
         return view('admin.services.show', compact('service'));
     }
 
@@ -72,24 +75,34 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
-        $validated = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'icon' => 'nullable|image|max:2048',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'is_active' => 'boolean',
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $service->fill($request->except(['icon']));
+        $service->slug = Str::slug($request->title);
 
         if ($request->hasFile('icon')) {
-            $validated['icon'] = $request->file('icon')->store('services', 'public');
+            // Delete old icon if exists
+            if ($service->icon) {
+                Storage::disk('public')->delete($service->icon);
+            }
+            $service->icon = $request->file('icon')->store('icons', 'public');
+        } elseif ($request->boolean('remove_icon')) {
+            if ($service->icon) {
+                Storage::disk('public')->delete($service->icon);
+                $service->icon = null;
+            }
         }
 
-        $service->update($validated);
+        $service->is_active = $request->has('is_active');
+        $service->save();
 
-        return redirect()->route('admin.services.index')
-            ->with('success', 'Service mis à jour avec succès.');
+        return redirect()->route('admin.services.index')->with('success', 'Service mis à jour avec succès.');
     }
 
     /**
@@ -97,9 +110,10 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
+        if ($service->icon) {
+            Storage::disk('public')->delete($service->icon);
+        }
         $service->delete();
-
-        return redirect()->route('admin.services.index')
-            ->with('success', 'Service supprimé avec succès.');
+        return redirect()->route('admin.services.index')->with('success', 'Service supprimé avec succès.');
     }
 }
