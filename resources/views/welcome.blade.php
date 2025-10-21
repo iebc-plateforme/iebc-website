@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="{{ \App\Models\Setting::get('site_description', 'International Economics and Business Corporation') }}">
     <meta name="keywords" content="{{ \App\Models\Setting::get('seo_keywords', 'IEBC, économie internationale, commerce, business') }}">

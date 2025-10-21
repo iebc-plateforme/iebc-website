@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="{{ route('admin.team.index') }}" class="text-white text-decoration-none">
+                <a href="{{ route('admin.teams.index') }}" class="text-white text-decoration-none">
                     Voir tous <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -214,7 +214,7 @@
                         </a>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <a href="{{ route('admin.team.create') }}" class="btn btn-outline-warning w-100">
+                        <a href="{{ route('admin.teams.create') }}" class="btn btn-outline-warning w-100">
                             <i class="fas fa-plus"></i> Nouveau membre
                         </a>
                     </div>

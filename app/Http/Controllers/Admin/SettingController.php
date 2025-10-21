@@ -31,6 +31,7 @@ class SettingController extends Controller
             'instagram_url' => 'nullable|url',
             'google_analytics_id' => 'nullable|string|max:50',
             'logo' => 'nullable|image|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png|max:512',
         ]);
 
         // Handle logo upload
@@ -42,10 +43,26 @@ class SettingController extends Controller
             $validated['logo'] = $request->file('logo')->store('settings', 'public');
         }
 
+        // Handle favicon upload
+        if ($request->hasFile('favicon')) {
+            $oldFavicon = Setting::get('favicon');
+            if ($oldFavicon && Storage::disk('public')->exists($oldFavicon)) {
+                Storage::disk('public')->delete($oldFavicon);
+            }
+            $faviconPath = $request->file('favicon')->store('settings', 'public');
+            $validated['favicon'] = $faviconPath;
+
+            // Copy to public root as favicon.ico
+            $faviconFullPath = storage_path('app/public/' . $faviconPath);
+            if (file_exists($faviconFullPath)) {
+                copy($faviconFullPath, public_path('favicon.ico'));
+            }
+        }
+
         // Save all settings
         foreach ($validated as $key => $value) {
             if ($value !== null) {
-                Setting::set($key, $value, $key === 'logo' ? 'file' : 'text');
+                Setting::set($key, $value, in_array($key, ['logo', 'favicon']) ? 'file' : 'text');
             }
         }
 

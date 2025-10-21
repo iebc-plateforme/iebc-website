@@ -35,7 +35,7 @@ Route::prefix('back-end-iebc')->name('admin.')->middleware(['auth', 'admin'])->g
 
     Route::resource('services', App\Http\Controllers\Admin\ServiceController::class);
     Route::resource('partners', App\Http\Controllers\Admin\PartnerController::class);
-    Route::resource('team', App\Http\Controllers\Admin\TeamController::class);
+    Route::resource('teams', App\Http\Controllers\Admin\TeamController::class);
     Route::resource('posts', App\Http\Controllers\Admin\PostController::class);
     Route::resource('galleries', App\Http\Controllers\Admin\GalleryController::class);
 

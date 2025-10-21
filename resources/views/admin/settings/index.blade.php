@@ -51,6 +51,23 @@
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="favicon" class="form-label">Favicon du site (icône)</label>
+                                <input type="file" class="form-control @error('favicon') is-invalid @enderror"
+                                       id="favicon" name="favicon" accept="image/x-icon,image/png">
+                                @error('favicon')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                @if(isset($settings['favicon']) && $settings['favicon'])
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $settings['favicon']) }}" alt="Favicon" class="img-thumbnail" style="max-height: 50px;">
+                                    </div>
+                                @endif
+                                <small class="text-muted">Format: .ico ou .png (max 512 Ko)</small>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="site_description" class="form-label">Description du site</label>
                             <textarea class="form-control @error('site_description') is-invalid @enderror"
