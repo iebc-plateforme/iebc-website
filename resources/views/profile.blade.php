@@ -1,152 +1,172 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
 
-@section('main-content')
-    <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Profile') }}</h1>
+@section('title', 'Mon profil')
+
+@section('content')
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Mon profil</h1>
+    </div>
 
     @if (session('success'))
-        <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger border-left-danger" role="alert">
-            <ul class="pl-4 my-2">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     <div class="row">
-
-        <div class="col-lg-4 order-lg-2">
-
-            <div class="card shadow mb-4">
-                <div class="card-profile-image mt-4">
-                    <figure class="rounded-circle avatar avatar font-weight-bold" style="font-size: 60px; height: 180px; width: 180px;" data-initial="{{ Auth::user()->name[0] }}"></figure>
-                </div>
-                <div class="card-body">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="text-center">
-                                <h5 class="font-weight-bold">{{  Auth::user()->fullName }}</h5>
-                                <p>Administrator</p>
-                            </div>
+        <!-- Informations utilisateur -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                             style="width: 120px; height: 120px; font-size: 48px; font-weight: bold;">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">22</span>
-                                <span class="description">Friends</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">10</span>
-                                <span class="description">Photos</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">89</span>
-                                <span class="description">Comments</span>
-                            </div>
-                        </div>
-                    </div>
+                    <h4 class="mb-1">{{ Auth::user()->name }}</h4>
+                    <p class="text-muted mb-2">{{ Auth::user()->email }}</p>
+                    <p class="mb-3">
+                        @if(Auth::user()->isSuperAdmin())
+                            <span class="badge bg-danger">Super Administrateur</span>
+                        @else
+                            <span class="badge bg-primary">Administrateur</span>
+                        @endif
+                    </p>
+                    <hr>
+                    <p class="small text-muted mb-0">
+                        <strong>Membre depuis:</strong><br>
+                        {{ Auth::user()->created_at->format('d/m/Y') }}
+                    </p>
                 </div>
             </div>
 
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-info-circle"></i> Informations
+                </div>
+                <div class="card-body">
+                    <p class="small mb-2"><i class="fas fa-shield-alt text-primary"></i> <strong>Sécurité:</strong></p>
+                    <ul class="small">
+                        <li>Le mot de passe doit contenir au minimum 8 caractères</li>
+                        <li>Laissez les champs mot de passe vides si vous ne souhaitez pas le modifier</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <div class="col-lg-8 order-lg-1">
-
-            <div class="card shadow mb-4">
-
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">My Account</h6>
+        <!-- Formulaire de modification -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <i class="fas fa-user-edit"></i> Modifier mes informations
                 </div>
-
                 <div class="card-body">
+                    <form method="POST" action="{{ route('profile.update') }}">
+                        @csrf
+                        @method('PUT')
 
-                    <form method="POST" action="{{ route('profile.update') }}" autocomplete="off">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <h6 class="text-muted mb-3">Informations personnelles</h6>
 
-                        <input type="hidden" name="_method" value="PUT">
-
-                        <h6 class="heading-small text-muted mb-4">User information</h6>
-
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="name">Name<span class="small text-danger">*</span></label>
-                                        <input type="text" id="name" class="form-control" name="name" placeholder="Name" value="{{ old('name', Auth::user()->name) }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="last_name">Last name</label>
-                                        <input type="text" id="last_name" class="form-control" name="last_name" placeholder="Last name" value="{{ old('last_name', Auth::user()->last_name) }}">
-                                    </div>
-                                </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Prénom <span class="text-danger">*</span></label>
+                                <input type="text"
+                                       class="form-control @error('name') is-invalid @enderror"
+                                       id="name"
+                                       name="name"
+                                       value="{{ old('name', Auth::user()->name) }}"
+                                       required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="email">Email address<span class="small text-danger">*</span></label>
-                                        <input type="email" id="email" class="form-control" name="email" placeholder="example@example.com" value="{{ old('email', Auth::user()->email) }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="current_password">Current password</label>
-                                        <input type="password" id="current_password" class="form-control" name="current_password" placeholder="Current password">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="new_password">New password</label>
-                                        <input type="password" id="new_password" class="form-control" name="new_password" placeholder="New password">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="confirm_password">Confirm password</label>
-                                        <input type="password" id="confirm_password" class="form-control" name="password_confirmation" placeholder="Confirm password">
-                                    </div>
-                                </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Nom de famille</label>
+                                <input type="text"
+                                       class="form-control @error('last_name') is-invalid @enderror"
+                                       id="last_name"
+                                       name="last_name"
+                                       value="{{ old('last_name', Auth::user()->last_name) }}">
+                                @error('last_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
-                        <!-- Button -->
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col text-center">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   id="email"
+                                   name="email"
+                                   value="{{ old('email', Auth::user()->email) }}"
+                                   required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h6 class="text-muted mb-3">Changer le mot de passe</h6>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Note:</strong> Laissez ces champs vides si vous ne souhaitez pas modifier votre mot de passe.
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Mot de passe actuel</label>
+                            <input type="password"
+                                   class="form-control @error('current_password') is-invalid @enderror"
+                                   id="current_password"
+                                   name="current_password">
+                            @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="new_password" class="form-label">Nouveau mot de passe</label>
+                                <input type="password"
+                                       class="form-control @error('new_password') is-invalid @enderror"
+                                       id="new_password"
+                                       name="new_password">
+                                @error('new_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">8 à 12 caractères</small>
                             </div>
+
+                            <div class="col-md-6">
+                                <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                                <input type="password"
+                                       class="form-control @error('password_confirmation') is-invalid @enderror"
+                                       id="password_confirmation"
+                                       name="password_confirmation">
+                                @error('password_confirmation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer les modifications
+                            </button>
+                            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Annuler
+                            </a>
                         </div>
                     </form>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
+</div>
 @endsection

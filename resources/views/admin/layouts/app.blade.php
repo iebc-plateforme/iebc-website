@@ -158,8 +158,16 @@
                 <i class="fas fa-envelope"></i> Messages
             </a>
             <hr style="border-color: rgba(255,255,255,0.1);">
+            @if(Auth::user()->isSuperAdmin())
+                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                    <i class="fas fa-user-shield"></i> Utilisateurs
+                </a>
+            @endif
             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                 <i class="fas fa-cog"></i> Paramètres
+            </a>
+            <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">
+                <i class="fas fa-user-circle"></i> Mon Profil
             </a>
             <a class="nav-link" href="{{ route('home') }}" target="_blank">
                 <i class="fas fa-globe"></i> Voir le site
