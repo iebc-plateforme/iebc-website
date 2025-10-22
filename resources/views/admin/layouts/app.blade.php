@@ -156,6 +156,12 @@
             </a>
             <a class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}" href="{{ route('admin.contacts.index') }}">
                 <i class="fas fa-envelope"></i> Messages
+                @php
+                    $unreadCount = \App\Models\Contact::where('is_read', false)->count();
+                @endphp
+                @if($unreadCount > 0)
+                    <span class="badge bg-danger ms-2">{{ $unreadCount }}</span>
+                @endif
             </a>
             <hr style="border-color: rgba(255,255,255,0.1);">
             @if(Auth::user()->isSuperAdmin())
@@ -192,9 +198,25 @@
                 </button>
                 <h5 class="mb-0 d-inline">@yield('page-title', 'Dashboard')</h5>
             </div>
-            <div>
+            <div class="d-flex align-items-center gap-3">
+                @php
+                    $unreadCount = \App\Models\Contact::where('is_read', false)->count();
+                @endphp
+                @if($unreadCount > 0)
+                    <a href="{{ route('admin.contacts.index') }}" class="position-relative text-decoration-none">
+                        <i class="fas fa-bell fs-5 text-warning"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ $unreadCount }}
+                        </span>
+                    </a>
+                @endif
                 <span class="text-muted">
                     <i class="fas fa-user"></i> {{ Auth::user()->name }}
+                    @if(Auth::user()->isSuperAdmin())
+                        <span class="badge bg-danger ms-1">Super Admin</span>
+                    @else
+                        <span class="badge bg-primary ms-1">Admin</span>
+                    @endif
                 </span>
             </div>
         </div>

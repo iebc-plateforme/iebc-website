@@ -40,7 +40,17 @@ class PartnerController extends Controller
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+
+        // Ensure slug uniqueness
+        $originalSlug = $slug;
+        $count = 1;
+        while (Partner::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('partners', 'public');
@@ -81,7 +91,17 @@ class PartnerController extends Controller
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+
+        // Ensure slug uniqueness (excluding current partner)
+        $originalSlug = $slug;
+        $count = 1;
+        while (Partner::where('slug', $slug)->where('id', '!=', $partner->id)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('logo')) {
             // Suppression de l'ancien logo si un nouveau est téléchargé

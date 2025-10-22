@@ -18,7 +18,7 @@ class Gallery extends Model
         'title',
         'description',
         'type',
-        'path',
+        'file_path',
         'category',
         'is_featured',
         'order',

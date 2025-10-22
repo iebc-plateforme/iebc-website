@@ -39,6 +39,16 @@ class UserController extends Controller
             'role' => 'required|in:admin,superadmin',
         ]);
 
+        // Vérifier qu'un seul Super Admin peut exister
+        if ($validated['role'] === 'superadmin') {
+            $superAdminExists = User::where('role', 'superadmin')->exists();
+            if ($superAdminExists) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Un Super Admin existe déjà dans le système. Un seul Super Admin est autorisé.');
+            }
+        }
+
         $validated['password'] = Hash::make($validated['password']);
 
         User::create($validated);
@@ -78,6 +88,16 @@ class UserController extends Controller
             'password' => ['nullable', 'confirmed', Password::min(8)],
             'role' => 'required|in:admin,superadmin',
         ]);
+
+        // Empêcher de promouvoir quelqu'un en Super Admin si un existe déjà
+        if ($validated['role'] === 'superadmin' && $user->role !== 'superadmin') {
+            $superAdminExists = User::where('role', 'superadmin')->where('id', '!=', $user->id)->exists();
+            if ($superAdminExists) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Un Super Admin existe déjà. Impossible de promouvoir cet utilisateur.');
+            }
+        }
 
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);

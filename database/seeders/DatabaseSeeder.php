@@ -12,9 +12,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         $this->call([
-           UserSeeder::class,
-           ServiceSeeder::class
-       ]);
+        // Call all seeders in order
+        $this->call([
+            UserSeeder::class,
+            SettingsSeeder::class,
+            IEBCServicesSeeder::class,
+            PartnersSeeder::class,
+            TeamsSeeder::class,
+            PostsSeeder::class,
+            GallerySeeder::class,
+        ]);
+
+        $this->command->info('All seeders executed successfully!');
     }
 }

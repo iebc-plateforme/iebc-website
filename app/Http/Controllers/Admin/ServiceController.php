@@ -40,8 +40,18 @@ class ServiceController extends Controller
             'order' => 'nullable|integer',
         ]);
 
+        $slug = Str::slug($request->title);
+
+        // Ensure slug uniqueness
+        $originalSlug = $slug;
+        $count = 1;
+        while (Service::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
         $service = new Service($request->except(['icon']));
-        $service->slug = Str::slug($request->title);
+        $service->slug = $slug;
 
         if ($request->hasFile('icon')) {
             $service->icon = $request->file('icon')->store('icons', 'public');
@@ -83,8 +93,18 @@ class ServiceController extends Controller
             'order' => 'nullable|integer',
         ]);
 
+        $slug = Str::slug($request->title);
+
+        // Ensure slug uniqueness (excluding current service)
+        $originalSlug = $slug;
+        $count = 1;
+        while (Service::where('slug', $slug)->where('id', '!=', $service->id)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
         $service->fill($request->except(['icon']));
-        $service->slug = Str::slug($request->title);
+        $service->slug = $slug;
 
         if ($request->hasFile('icon')) {
             // Delete old icon if exists

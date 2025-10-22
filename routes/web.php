@@ -16,18 +16,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', function () {
+    return redirect()->route('welcome');
+})->name('home');
 
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::put('/profile', 'ProfileController@update')->name('profile.update');
 
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
+// Frontend Public Routes
+Route::get('/services', [App\Http\Controllers\FrontendController::class, 'services'])->name('services');
+Route::get('/blog', [App\Http\Controllers\FrontendController::class, 'blog'])->name('blog');
+Route::get('/blog/{slug}', [App\Http\Controllers\FrontendController::class, 'blogShow'])->name('blog.show');
+Route::get('/equipe', [App\Http\Controllers\FrontendController::class, 'team'])->name('team');
+Route::get('/galerie', [App\Http\Controllers\FrontendController::class, 'gallery'])->name('gallery');
+Route::get('/partenaires', [App\Http\Controllers\FrontendController::class, 'partners'])->name('partners');
+Route::get('/contact', [App\Http\Controllers\FrontendController::class, 'contactForm'])->name('contact');
+Route::post('/contact', [App\Http\Controllers\FrontendController::class, 'submitContact'])->name('contact.submit');
+Route::get('/a-propos', [App\Http\Controllers\FrontendController::class, 'about'])->name('about');
 
 // Admin Routes - Accessible via /back-end-iebc
 Route::prefix('back-end-iebc')->name('admin.')->middleware(['auth', 'admin'])->group(function () {

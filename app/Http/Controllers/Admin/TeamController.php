@@ -41,7 +41,17 @@ class TeamController extends Controller
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+
+        // Ensure slug uniqueness
+        $originalSlug = $slug;
+        $count = 1;
+        while (Team::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('photo')) {
             $validated['photo'] = $request->file('photo')->store('teams', 'public');
@@ -83,7 +93,17 @@ class TeamController extends Controller
             'order' => 'nullable|integer',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+
+        // Ensure slug uniqueness (excluding current team)
+        $originalSlug = $slug;
+        $count = 1;
+        while (Team::where('slug', $slug)->where('id', '!=', $team->id)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('photo')) {
             if ($team->photo) {

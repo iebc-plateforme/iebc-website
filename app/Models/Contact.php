@@ -11,5 +11,10 @@ class Contact extends Model
         'email',
         'subject',
         'message',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 }

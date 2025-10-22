@@ -198,6 +198,80 @@
                             </div>
                         </div>
 
+                        <!-- Theme customization -->
+                        <h5 class="card-title mb-3 mt-4">
+                            <i class="fas fa-palette"></i> Personnalisation du Thème
+                        </h5>
+                        <p class="text-muted small mb-3">Personnalisez les couleurs de votre site web. Ces couleurs seront appliquées sur toutes les pages publiques.</p>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="theme_primary_color" class="form-label">Couleur Principale</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color @error('theme_primary_color') is-invalid @enderror"
+                                           id="theme_primary_color" name="theme_primary_color"
+                                           value="{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#0d6efd') }}">
+                                    <span class="input-group-text">{{ old('theme_primary_color', $settings['theme_primary_color'] ?? '#0d6efd') }}</span>
+                                </div>
+                                @error('theme_primary_color')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Utilisée pour les boutons principaux et liens</small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="theme_secondary_color" class="form-label">Couleur Secondaire</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color @error('theme_secondary_color') is-invalid @enderror"
+                                           id="theme_secondary_color" name="theme_secondary_color"
+                                           value="{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#6c757d') }}">
+                                    <span class="input-group-text">{{ old('theme_secondary_color', $settings['theme_secondary_color'] ?? '#6c757d') }}</span>
+                                </div>
+                                @error('theme_secondary_color')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Couleur de fond et éléments secondaires</small>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="theme_accent_color" class="form-label">Couleur d'Accent</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color @error('theme_accent_color') is-invalid @enderror"
+                                           id="theme_accent_color" name="theme_accent_color"
+                                           value="{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#198754') }}">
+                                    <span class="input-group-text">{{ old('theme_accent_color', $settings['theme_accent_color'] ?? '#198754') }}</span>
+                                </div>
+                                @error('theme_accent_color')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Utilisée pour les highlights et call-to-actions</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="theme_font_family" class="form-label">Police de caractères</label>
+                                <select class="form-select @error('theme_font_family') is-invalid @enderror"
+                                        id="theme_font_family" name="theme_font_family">
+                                    <option value="system-ui" {{ old('theme_font_family', $settings['theme_font_family'] ?? 'system-ui') == 'system-ui' ? 'selected' : '' }}>Système (Par défaut)</option>
+                                    <option value="'Roboto', sans-serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == "'Roboto', sans-serif" ? 'selected' : '' }}>Roboto</option>
+                                    <option value="'Open Sans', sans-serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == "'Open Sans', sans-serif" ? 'selected' : '' }}>Open Sans</option>
+                                    <option value="'Lato', sans-serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == "'Lato', sans-serif" ? 'selected' : '' }}>Lato</option>
+                                    <option value="'Montserrat', sans-serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == "'Montserrat', sans-serif" ? 'selected' : '' }}>Montserrat</option>
+                                    <option value="'Poppins', sans-serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == "'Poppins', sans-serif" ? 'selected' : '' }}>Poppins</option>
+                                    <option value="Georgia, serif" {{ old('theme_font_family', $settings['theme_font_family'] ?? '') == 'Georgia, serif' ? 'selected' : '' }}>Georgia (Serif)</option>
+                                </select>
+                                @error('theme_font_family')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Police utilisée sur tout le site web</small>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> <strong>Note:</strong> Les modifications de thème seront visibles immédiatement sur toutes les pages publiques du site après l'enregistrement.
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Enregistrer les paramètres
@@ -210,3 +284,23 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Update color display text when color picker changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorInputs = ['theme_primary_color', 'theme_secondary_color', 'theme_accent_color'];
+
+        colorInputs.forEach(inputId => {
+            const colorPicker = document.getElementById(inputId);
+            const displaySpan = colorPicker.nextElementSibling;
+
+            if (colorPicker && displaySpan) {
+                colorPicker.addEventListener('input', function() {
+                    displaySpan.textContent = this.value;
+                });
+            }
+        });
+    });
+</script>
+@endpush

@@ -42,7 +42,17 @@ class PostController extends Controller
             'published_at' => 'nullable|date',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $slug = Str::slug($validated['title']);
+
+        // Ensure slug uniqueness
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
         $validated['user_id'] = auth()->id();
 
         if ($request->hasFile('image')) {
@@ -86,7 +96,17 @@ class PostController extends Controller
             'published_at' => 'nullable|date',
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $slug = Str::slug($validated['title']);
+
+        // Ensure slug uniqueness (excluding current post)
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $validated['slug'] = $slug;
 
         if ($request->hasFile('image')) {
             if ($post->image) {

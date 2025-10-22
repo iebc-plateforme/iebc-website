@@ -6,7 +6,9 @@
       "Bash(copy:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(findstr:*)",
+      "Bash(dir /B \"C:\\xampp\\htdocs\\iebc\\database\\migrations\")"
     ],
     "deny": [],
     "ask": []
