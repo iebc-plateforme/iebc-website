@@ -7,9 +7,14 @@
         <div class="login-brand">
             <div class="brand-content">
                 @php
-                    $logo = \App\Models\Setting::get('company_logo', asset('img/logo.png'));
+                    $logo = \App\Models\Setting::get('company_logo', '/img/logo.png');
                     $siteName = \App\Models\Setting::get('site_name', 'IEBC SARL');
                     $siteDescription = \App\Models\Setting::get('site_description', 'Finance Islamique & Conseil Économique');
+
+                    // Gérer les chemins relatifs et absolus
+                    if ($logo && !str_starts_with($logo, 'http')) {
+                        $logo = asset(ltrim($logo, '/'));
+                    }
                 @endphp
 
                 <div class="logo-wrapper">

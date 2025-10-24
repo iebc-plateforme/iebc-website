@@ -21,7 +21,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'company_logo',
-                'value' => asset('img/logo.png'),
+                'value' => '/img/logo.png', // Chemin relatif pour compatibilité multi-environnement
                 'type' => 'text',
             ],
             [
