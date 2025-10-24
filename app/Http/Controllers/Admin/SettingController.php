@@ -40,33 +40,36 @@ class SettingController extends Controller
 
         // Handle logo upload
         if ($request->hasFile('logo')) {
-            $oldLogo = Setting::get('logo');
+            $oldLogo = Setting::get('company_logo');
             if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
                 Storage::disk('public')->delete($oldLogo);
             }
-            $validated['logo'] = $request->file('logo')->store('settings', 'public');
+            $logoPath = $request->file('logo')->store('settings', 'public');
+            Setting::set('company_logo', $logoPath, 'file');
+            unset($validated['logo']); // Remove from batch save
         }
 
         // Handle favicon upload
         if ($request->hasFile('favicon')) {
-            $oldFavicon = Setting::get('favicon');
+            $oldFavicon = Setting::get('site_favicon');
             if ($oldFavicon && Storage::disk('public')->exists($oldFavicon)) {
                 Storage::disk('public')->delete($oldFavicon);
             }
             $faviconPath = $request->file('favicon')->store('settings', 'public');
-            $validated['favicon'] = $faviconPath;
+            Setting::set('site_favicon', $faviconPath, 'file');
 
             // Copy to public root as favicon.ico
             $faviconFullPath = storage_path('app/public/' . $faviconPath);
             if (file_exists($faviconFullPath)) {
                 copy($faviconFullPath, public_path('favicon.ico'));
             }
+            unset($validated['favicon']); // Remove from batch save
         }
 
-        // Save all settings
+        // Save all other settings
         foreach ($validated as $key => $value) {
             if ($value !== null) {
-                Setting::set($key, $value, in_array($key, ['logo', 'favicon']) ? 'file' : 'text');
+                Setting::set($key, $value, 'text');
             }
         }
 

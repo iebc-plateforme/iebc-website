@@ -19,10 +19,17 @@ class SettingsSeeder extends Seeder
                 'value' => 'IEBC SARL',
                 'type' => 'text',
             ],
+            // Note: Le logo sera uploadé via l'interface admin Settings
+            // Il sera stocké dans storage/app/public/settings/
             [
                 'key' => 'company_logo',
-                'value' => '/img/favicon.png', // Utilise favicon.png en attendant le vrai logo
-                'type' => 'text',
+                'value' => null, // Sera uploadé via l'interface admin
+                'type' => 'file',
+            ],
+            [
+                'key' => 'site_favicon',
+                'value' => null, // Sera uploadé via l'interface admin
+                'type' => 'file',
             ],
             [
                 'key' => 'site_description',

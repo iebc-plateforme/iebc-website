@@ -43,9 +43,9 @@
                                 @error('logo')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                @if(isset($settings['logo']) && $settings['logo'])
+                                @if(isset($settings['company_logo']) && $settings['company_logo'])
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $settings['logo']) }}" alt="Logo" class="img-thumbnail" style="max-height: 100px;">
+                                        <img src="{{ asset('storage/' . $settings['company_logo']) }}" alt="Logo" class="img-thumbnail" style="max-height: 100px;">
                                     </div>
                                 @endif
                             </div>
@@ -59,9 +59,9 @@
                                 @error('favicon')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                @if(isset($settings['favicon']) && $settings['favicon'])
+                                @if(isset($settings['site_favicon']) && $settings['site_favicon'])
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $settings['favicon']) }}" alt="Favicon" class="img-thumbnail" style="max-height: 50px;">
+                                        <img src="{{ asset('storage/' . $settings['site_favicon']) }}" alt="Favicon" class="img-thumbnail" style="max-height: 50px;">
                                     </div>
                                 @endif
                                 <small class="text-muted">Format: .ico ou .png (max 512 Ko)</small>
