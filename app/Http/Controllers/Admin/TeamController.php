@@ -32,35 +32,48 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|max:2048',
-            'is_active' => 'boolean',
-            'order' => 'nullable|integer',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'position' => 'required|string|max:255',
+                'bio' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'linkedin_url' => 'nullable|url|max:255',
+                'twitter_url' => 'nullable|url|max:255',
+                'facebook_url' => 'nullable|url|max:255',
+                'instagram_url' => 'nullable|url|max:255',
+                'github_url' => 'nullable|url|max:255',
+                'website_url' => 'nullable|url|max:255',
+                'is_active' => 'boolean',
+                'order' => 'nullable|integer|min:0',
+            ]);
 
-        $slug = Str::slug($validated['name']);
+            $slug = Str::slug($validated['name']);
 
-        // Ensure slug uniqueness
-        $originalSlug = $slug;
-        $count = 1;
-        while (Team::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
+            // Ensure slug uniqueness
+            $originalSlug = $slug;
+            $count = 1;
+            while (Team::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
+            }
+
+            $validated['slug'] = $slug;
+            $validated['is_active'] = $request->has('is_active');
+
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $request->file('photo')->store('teams', 'public');
+            }
+
+            Team::create($validated);
+
+            return redirect()->route('admin.teams.index')
+                ->with('success', 'Membre d\'équipe créé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la création du membre: ' . $e->getMessage());
         }
-
-        $validated['slug'] = $slug;
-
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
-        }
-
-        Team::create($validated);
-
-        return redirect()->route('admin.teams.index')
-            ->with('success', 'Membre d\'équipe créé avec succès.');
     }
 
     /**
@@ -84,38 +97,51 @@ class TeamController extends Controller
      */
     public function update(Request $request, Team $team)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|max:2048',
-            'is_active' => 'boolean',
-            'order' => 'nullable|integer',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'position' => 'required|string|max:255',
+                'bio' => 'nullable|string',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'linkedin_url' => 'nullable|url|max:255',
+                'twitter_url' => 'nullable|url|max:255',
+                'facebook_url' => 'nullable|url|max:255',
+                'instagram_url' => 'nullable|url|max:255',
+                'github_url' => 'nullable|url|max:255',
+                'website_url' => 'nullable|url|max:255',
+                'is_active' => 'boolean',
+                'order' => 'nullable|integer|min:0',
+            ]);
 
-        $slug = Str::slug($validated['name']);
+            $slug = Str::slug($validated['name']);
 
-        // Ensure slug uniqueness (excluding current team)
-        $originalSlug = $slug;
-        $count = 1;
-        while (Team::where('slug', $slug)->where('id', '!=', $team->id)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
-        }
-
-        $validated['slug'] = $slug;
-
-        if ($request->hasFile('photo')) {
-            if ($team->photo) {
-                Storage::disk('public')->delete($team->photo);
+            // Ensure slug uniqueness (excluding current team)
+            $originalSlug = $slug;
+            $count = 1;
+            while (Team::where('slug', $slug)->where('id', '!=', $team->id)->exists()) {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
             }
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
+
+            $validated['slug'] = $slug;
+            $validated['is_active'] = $request->has('is_active');
+
+            if ($request->hasFile('photo')) {
+                if ($team->photo && Storage::disk('public')->exists($team->photo)) {
+                    Storage::disk('public')->delete($team->photo);
+                }
+                $validated['photo'] = $request->file('photo')->store('teams', 'public');
+            }
+
+            $team->update($validated);
+
+            return redirect()->route('admin.teams.index')
+                ->with('success', 'Membre d\'équipe mis à jour avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la mise à jour du membre: ' . $e->getMessage());
         }
-
-        $team->update($validated);
-
-        return redirect()->route('admin.teams.index')
-            ->with('success', 'Membre d\'équipe mis à jour avec succès.');
     }
 
     /**
@@ -123,13 +149,18 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
-        if ($team->photo) {
-            Storage::disk('public')->delete($team->photo);
+        try {
+            if ($team->photo && Storage::disk('public')->exists($team->photo)) {
+                Storage::disk('public')->delete($team->photo);
+            }
+
+            $team->delete();
+
+            return redirect()->route('admin.teams.index')
+                ->with('success', 'Membre d\'équipe supprimé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression du membre: ' . $e->getMessage());
         }
-
-        $team->delete();
-
-        return redirect()->route('admin.teams.index')
-            ->with('success', 'Membre d\'équipe supprimé avec succès.');
     }
 }

@@ -13,6 +13,12 @@ class Team extends Model
         'slug',
         'photo',
         'bio',
+        'linkedin_url',
+        'twitter_url',
+        'facebook_url',
+        'instagram_url',
+        'github_url',
+        'website_url',
         'is_active',
         'order',
     ];

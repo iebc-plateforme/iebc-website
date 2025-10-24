@@ -49,6 +49,97 @@
                 <small class="form-text text-muted">Format acceptés : JPG, PNG (Max : 2MB)</small>
             </div>
 
+            <hr class="my-4">
+            <h6 class="mb-3"><i class="fas fa-share-alt me-2"></i>Réseaux Sociaux & Liens Professionnels</h6>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="linkedin_url" class="form-label">
+                            <i class="fab fa-linkedin text-primary me-2"></i>LinkedIn
+                        </label>
+                        <input type="url" class="form-control @error('linkedin_url') is-invalid @enderror"
+                               id="linkedin_url" name="linkedin_url" value="{{ old('linkedin_url') }}"
+                               placeholder="https://www.linkedin.com/in/username">
+                        @error('linkedin_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="twitter_url" class="form-label">
+                            <i class="fab fa-twitter text-info me-2"></i>Twitter
+                        </label>
+                        <input type="url" class="form-control @error('twitter_url') is-invalid @enderror"
+                               id="twitter_url" name="twitter_url" value="{{ old('twitter_url') }}"
+                               placeholder="https://twitter.com/username">
+                        @error('twitter_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="facebook_url" class="form-label">
+                            <i class="fab fa-facebook text-primary me-2"></i>Facebook
+                        </label>
+                        <input type="url" class="form-control @error('facebook_url') is-invalid @enderror"
+                               id="facebook_url" name="facebook_url" value="{{ old('facebook_url') }}"
+                               placeholder="https://www.facebook.com/username">
+                        @error('facebook_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="instagram_url" class="form-label">
+                            <i class="fab fa-instagram text-danger me-2"></i>Instagram
+                        </label>
+                        <input type="url" class="form-control @error('instagram_url') is-invalid @enderror"
+                               id="instagram_url" name="instagram_url" value="{{ old('instagram_url') }}"
+                               placeholder="https://www.instagram.com/username">
+                        @error('instagram_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="github_url" class="form-label">
+                            <i class="fab fa-github text-dark me-2"></i>GitHub
+                        </label>
+                        <input type="url" class="form-control @error('github_url') is-invalid @enderror"
+                               id="github_url" name="github_url" value="{{ old('github_url') }}"
+                               placeholder="https://github.com/username">
+                        @error('github_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="website_url" class="form-label">
+                            <i class="fas fa-globe text-success me-2"></i>Site Web Personnel
+                        </label>
+                        <input type="url" class="form-control @error('website_url') is-invalid @enderror"
+                               id="website_url" name="website_url" value="{{ old('website_url') }}"
+                               placeholder="https://www.example.com">
+                        @error('website_url')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">

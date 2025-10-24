@@ -169,6 +169,9 @@
                     <i class="fas fa-user-shield"></i> Utilisateurs
                 </a>
             @endif
+            <a class="nav-link {{ request()->routeIs('admin.themes.*') ? 'active' : '' }}" href="{{ route('admin.themes.index') }}">
+                <i class="fas fa-palette"></i> Thèmes
+            </a>
             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                 <i class="fas fa-cog"></i> Paramètres
             </a>

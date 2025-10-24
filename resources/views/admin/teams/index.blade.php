@@ -25,6 +25,7 @@
                             <th>Photo</th>
                             <th>Nom</th>
                             <th>Poste</th>
+                            <th>Réseaux Sociaux</th>
                             <th>Ordre</th>
                             <th>Statut</th>
                             <th>Actions</th>
@@ -42,8 +43,47 @@
                                         <i class="fas fa-user-circle fa-2x text-muted"></i>
                                     @endif
                                 </td>
-                                <td>{{ $member->name }}</td>
+                                <td>
+                                    <strong>{{ $member->name }}</strong>
+                                </td>
                                 <td>{{ $member->position }}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        @if(!empty($member->linkedin_url))
+                                            <a href="{{ $member->linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary" title="LinkedIn">
+                                                <i class="fab fa-linkedin"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->twitter_url))
+                                            <a href="{{ $member->twitter_url }}" target="_blank" class="btn btn-sm btn-outline-info" title="Twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->facebook_url))
+                                            <a href="{{ $member->facebook_url }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Facebook">
+                                                <i class="fab fa-facebook"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->instagram_url))
+                                            <a href="{{ $member->instagram_url }}" target="_blank" class="btn btn-sm btn-outline-danger" title="Instagram">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->github_url))
+                                            <a href="{{ $member->github_url }}" target="_blank" class="btn btn-sm btn-outline-dark" title="GitHub">
+                                                <i class="fab fa-github"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->website_url))
+                                            <a href="{{ $member->website_url }}" target="_blank" class="btn btn-sm btn-outline-success" title="Site Web">
+                                                <i class="fas fa-globe"></i>
+                                            </a>
+                                        @endif
+                                        @if(empty($member->linkedin_url) && empty($member->twitter_url) && empty($member->facebook_url) && empty($member->instagram_url) && empty($member->github_url) && empty($member->website_url))
+                                            <span class="text-muted small">Aucun</span>
+                                        @endif
+                                    </div>
+                                </td>
                                 <td>{{ $member->order ?? 0 }}</td>
                                 <td>
                                     <span class="badge {{ $member->is_active ? 'bg-success' : 'bg-secondary' }}">

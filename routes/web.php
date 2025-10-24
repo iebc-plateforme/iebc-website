@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// SEO Routes
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots'])->name('robots');
+
 Auth::routes();
 
 Route::get('/home', function () {
@@ -55,6 +59,10 @@ Route::prefix('back-end-iebc')->name('admin.')->middleware(['auth', 'admin'])->g
     // Paramètres du site
     Route::get('settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::put('settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+
+    // Theme Management
+    Route::resource('themes', App\Http\Controllers\Admin\ThemeController::class)->except(['show']);
+    Route::post('themes/{theme}/activate', [App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
 
     // Gestion des utilisateurs (réservé au Super Admin)
     Route::middleware(['superadmin'])->group(function () {

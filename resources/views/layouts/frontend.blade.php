@@ -8,20 +8,39 @@
     <!-- SEO Meta Tags -->
     <title>@yield('title', \App\Models\Setting::get('meta_title', \App\Models\Setting::get('site_name', 'IEBC SARL')))</title>
     <meta name="description" content="@yield('description', \App\Models\Setting::get('site_description', 'International Economics and Business Corporation'))">
-    <meta name="keywords" content="{{ \App\Models\Setting::get('seo_keywords', 'IEBC, économie internationale, commerce, business') }}">
+    <meta name="keywords" content="{{ \App\Models\Setting::get('seo_keywords', 'IEBC, économie internationale, commerce, business, finance islamique, consulting, solutions économiques') }}">
     <meta name="author" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @if(\App\Models\Setting::get('logo'))
+    <link rel="apple-touch-icon" href="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
+    @endif
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title', \App\Models\Setting::get('site_name', 'IEBC SARL'))">
     <meta property="og:description" content="@yield('description', \App\Models\Setting::get('site_description'))">
+    <meta property="og:site_name" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
+    <meta property="og:locale" content="fr_FR">
     @if(\App\Models\Setting::get('logo'))
     <meta property="og:image" content="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }} Logo">
+    @endif
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', \App\Models\Setting::get('site_name', 'IEBC SARL'))">
+    <meta name="twitter:description" content="@yield('description', \App\Models\Setting::get('site_description'))">
+    @if(\App\Models\Setting::get('logo'))
+    <meta name="twitter:image" content="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
     @endif
 
     <!-- Bootstrap CSS -->
@@ -30,21 +49,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     @php
-        $fontFamily = \App\Models\Setting::get('theme_font_family', 'system-ui');
-        $needsGoogleFont = in_array($fontFamily, ["'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif", "'Montserrat', sans-serif", "'Poppins', sans-serif"]);
-        if ($needsGoogleFont) {
-            $fontName = str_replace(["'", ", sans-serif"], '', $fontFamily);
-            echo '<link href="https://fonts.googleapis.com/css2?family=' . $fontName . ':wght@300;400;500;600;700&display=swap" rel="stylesheet">';
+        $activeTheme = \App\Models\Theme::getActive();
+        $fontFamily = $activeTheme ? $activeTheme->font_family : \App\Models\Setting::get('theme_font_family', 'system-ui');
+        $headingFontFamily = $activeTheme ? ($activeTheme->heading_font_family ?? $fontFamily) : $fontFamily;
+
+        $googleFonts = ["'Roboto', sans-serif", "'Open Sans', sans-serif", "'Lato', sans-serif", "'Montserrat', sans-serif", "'Poppins', sans-serif", "'Inter', sans-serif", "'Playfair Display', serif", "'Merriweather', serif", "'Lora', serif"];
+        $fontsToLoad = array_unique(array_filter([$fontFamily, $headingFontFamily], function($font) use ($googleFonts) {
+            return in_array($font, $googleFonts);
+        }));
+
+        foreach ($fontsToLoad as $font) {
+            $fontName = str_replace(["'", ", sans-serif", ", serif"], '', $font);
+            echo '<link href="https://fonts.googleapis.com/css2?family=' . str_replace(' ', '+', $fontName) . ':wght@300;400;500;600;700&display=swap" rel="stylesheet">';
         }
     @endphp
 
     <style>
         :root {
-            --primary-color: {{ \App\Models\Setting::get('theme_primary_color', '#0d6efd') }};
-            --secondary-color: {{ \App\Models\Setting::get('theme_secondary_color', '#6c757d') }};
-            --accent-color: {{ \App\Models\Setting::get('theme_accent_color', '#198754') }};
-            --dark-color: #1e293b;
-            --light-color: #f8fafc;
+            @if($activeTheme)
+                --primary-color: {{ $activeTheme->primary_color }};
+                --secondary-color: {{ $activeTheme->secondary_color }};
+                --accent-color: {{ $activeTheme->accent_color }};
+                --success-color: {{ $activeTheme->success_color }};
+                --warning-color: {{ $activeTheme->warning_color }};
+                --danger-color: {{ $activeTheme->danger_color }};
+                --info-color: {{ $activeTheme->info_color }};
+                --light-color: {{ $activeTheme->light_color }};
+                --dark-color: {{ $activeTheme->dark_color }};
+                --font-family: {{ $activeTheme->font_family }};
+                --heading-font-family: {{ $activeTheme->heading_font_family ?? $activeTheme->font_family }};
+                --border-radius: {{ $activeTheme->border_radius }};
+                --box-shadow: {{ $activeTheme->box_shadow }};
+            @else
+                --primary-color: {{ \App\Models\Setting::get('theme_primary_color', '#1e3a5f') }};
+                --secondary-color: {{ \App\Models\Setting::get('theme_secondary_color', '#6c757d') }};
+                --accent-color: {{ \App\Models\Setting::get('theme_accent_color', '#c9a961') }};
+                --success-color: #198754;
+                --warning-color: #ffc107;
+                --danger-color: #dc3545;
+                --info-color: #0dcaf0;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+                --font-family: {{ \App\Models\Setting::get('theme_font_family', 'system-ui') }};
+                --heading-font-family: {{ \App\Models\Setting::get('theme_font_family', 'system-ui') }};
+                --border-radius: 0.375rem;
+                --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            @endif
         }
 
         * {
@@ -54,15 +104,19 @@
         }
 
         body {
-            font-family: {{ \App\Models\Setting::get('theme_font_family', 'system-ui') }};
+            font-family: var(--font-family);
             color: var(--dark-color);
             line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--heading-font-family);
         }
 
         /* Navbar */
         .navbar {
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--box-shadow);
             padding: 1rem 0;
         }
 
@@ -182,7 +236,7 @@
 
         /* Alert Messages */
         .alert {
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             border: none;
         }
 
@@ -202,14 +256,41 @@
             box-shadow: 0 10px 25px rgba(37,99,235,0.3);
         }
 
+        .btn-success {
+            background: var(--success-color) !important;
+            border-color: var(--success-color) !important;
+        }
+
+        .btn-warning {
+            background: var(--warning-color) !important;
+            border-color: var(--warning-color) !important;
+        }
+
+        .btn-danger {
+            background: var(--danger-color) !important;
+            border-color: var(--danger-color) !important;
+        }
+
+        .btn-info {
+            background: var(--info-color) !important;
+            border-color: var(--info-color) !important;
+        }
+
+        /* Cards */
+        .card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+        }
+
         /* Mobile Menu */
         @media (max-width: 991px) {
             .navbar-collapse {
                 background: white;
                 padding: 1rem;
                 margin-top: 1rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
             }
 
             .page-header h1 {
@@ -386,6 +467,58 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', '{{ $gaId }}');
+    </script>
+    @endif
+
+    <!-- JSON-LD Structured Data for Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}",
+      "url": "{{ url('/') }}",
+      "logo": "{{ \App\Models\Setting::get('logo') ? asset('storage/' . \App\Models\Setting::get('logo')) : '' }}",
+      "description": "{{ \App\Models\Setting::get('site_description', 'International Economics and Business Corporation') }}",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "{{ \App\Models\Setting::get('contact_address', '') }}"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "{{ \App\Models\Setting::get('contact_phone', '') }}",
+        "contactType": "customer service",
+        "email": "{{ \App\Models\Setting::get('contact_email', '') }}"
+      },
+      "sameAs": [
+        @if(\App\Models\Setting::get('facebook_url'))
+        "{{ \App\Models\Setting::get('facebook_url') }}",
+        @endif
+        @if(\App\Models\Setting::get('twitter_url'))
+        "{{ \App\Models\Setting::get('twitter_url') }}",
+        @endif
+        @if(\App\Models\Setting::get('linkedin_url'))
+        "{{ \App\Models\Setting::get('linkedin_url') }}",
+        @endif
+        @if(\App\Models\Setting::get('instagram_url'))
+        "{{ \App\Models\Setting::get('instagram_url') }}"
+        @endif
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD Breadcrumb for non-homepage -->
+    @if(!Request::is('/'))
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "{{ route('welcome') }}"
+      }]
+    }
     </script>
     @endif
 

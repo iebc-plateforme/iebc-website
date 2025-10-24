@@ -32,37 +32,44 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'excerpt' => 'nullable|string',
-            'category' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
-            'is_published' => 'boolean',
-            'published_at' => 'nullable|date',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'required|string',
+                'excerpt' => 'nullable|string|max:500',
+                'category' => 'nullable|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'is_published' => 'boolean',
+                'published_at' => 'nullable|date',
+            ]);
 
-        $slug = Str::slug($validated['title']);
+            $slug = Str::slug($validated['title']);
 
-        // Ensure slug uniqueness
-        $originalSlug = $slug;
-        $count = 1;
-        while (Post::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
+            // Ensure slug uniqueness
+            $originalSlug = $slug;
+            $count = 1;
+            while (Post::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
+            }
+
+            $validated['slug'] = $slug;
+            $validated['user_id'] = auth()->id();
+            $validated['is_published'] = $request->has('is_published');
+
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('posts', 'public');
+            }
+
+            Post::create($validated);
+
+            return redirect()->route('admin.posts.index')
+                ->with('success', 'Article créé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la création de l\'article: ' . $e->getMessage());
         }
-
-        $validated['slug'] = $slug;
-        $validated['user_id'] = auth()->id();
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('posts', 'public');
-        }
-
-        Post::create($validated);
-
-        return redirect()->route('admin.posts.index')
-            ->with('success', 'Article créé avec succès.');
     }
 
     /**
@@ -86,39 +93,46 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'excerpt' => 'nullable|string',
-            'category' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
-            'is_published' => 'boolean',
-            'published_at' => 'nullable|date',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'content' => 'required|string',
+                'excerpt' => 'nullable|string|max:500',
+                'category' => 'nullable|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'is_published' => 'boolean',
+                'published_at' => 'nullable|date',
+            ]);
 
-        $slug = Str::slug($validated['title']);
+            $slug = Str::slug($validated['title']);
 
-        // Ensure slug uniqueness (excluding current post)
-        $originalSlug = $slug;
-        $count = 1;
-        while (Post::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
-        }
-
-        $validated['slug'] = $slug;
-
-        if ($request->hasFile('image')) {
-            if ($post->image) {
-                Storage::disk('public')->delete($post->image);
+            // Ensure slug uniqueness (excluding current post)
+            $originalSlug = $slug;
+            $count = 1;
+            while (Post::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+                $slug = $originalSlug . '-' . $count;
+                $count++;
             }
-            $validated['image'] = $request->file('image')->store('posts', 'public');
+
+            $validated['slug'] = $slug;
+            $validated['is_published'] = $request->has('is_published');
+
+            if ($request->hasFile('image')) {
+                if ($post->image && Storage::disk('public')->exists($post->image)) {
+                    Storage::disk('public')->delete($post->image);
+                }
+                $validated['image'] = $request->file('image')->store('posts', 'public');
+            }
+
+            $post->update($validated);
+
+            return redirect()->route('admin.posts.index')
+                ->with('success', 'Article mis à jour avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la mise à jour de l\'article: ' . $e->getMessage());
         }
-
-        $post->update($validated);
-
-        return redirect()->route('admin.posts.index')
-            ->with('success', 'Article mis à jour avec succès.');
     }
 
     /**
@@ -126,13 +140,18 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
-        }
-        
-        $post->delete();
+        try {
+            if ($post->image && Storage::disk('public')->exists($post->image)) {
+                Storage::disk('public')->delete($post->image);
+            }
 
-        return redirect()->route('admin.posts.index')
-            ->with('success', 'Article supprimé avec succès.');
+            $post->delete();
+
+            return redirect()->route('admin.posts.index')
+                ->with('success', 'Article supprimé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de l\'article: ' . $e->getMessage());
+        }
     }
 }

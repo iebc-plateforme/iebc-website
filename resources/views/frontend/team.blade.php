@@ -41,6 +41,53 @@
                                 @if($member->bio)
                                     <p class="card-text text-muted small">{{ Str::limit($member->bio, 100) }}</p>
                                 @endif
+
+                                {{-- Social Media Links - Only show if at least one link is not empty --}}
+                                @php
+                                    $hasSocialLinks = !empty($member->linkedin_url) || !empty($member->twitter_url) ||
+                                                      !empty($member->facebook_url) || !empty($member->instagram_url) ||
+                                                      !empty($member->github_url) || !empty($member->website_url);
+                                @endphp
+                                @if($hasSocialLinks)
+                                    <div class="social-links mt-3">
+                                        @if(!empty($member->linkedin_url))
+                                            <a href="{{ $member->linkedin_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-primary mx-1" title="LinkedIn">
+                                                <i class="fab fa-linkedin"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->twitter_url))
+                                            <a href="{{ $member->twitter_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-info mx-1" title="Twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->facebook_url))
+                                            <a href="{{ $member->facebook_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-primary mx-1" title="Facebook">
+                                                <i class="fab fa-facebook"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->instagram_url))
+                                            <a href="{{ $member->instagram_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-danger mx-1" title="Instagram">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->github_url))
+                                            <a href="{{ $member->github_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-dark mx-1" title="GitHub">
+                                                <i class="fab fa-github"></i>
+                                            </a>
+                                        @endif
+                                        @if(!empty($member->website_url))
+                                            <a href="{{ $member->website_url }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-sm btn-outline-success mx-1" title="Site Web">
+                                                <i class="fas fa-globe"></i>
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -58,6 +105,45 @@
     .team-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
+    }
+    .social-links a {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .social-links a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .social-links a.btn-outline-primary:hover {
+        background: #0077b5;
+        border-color: #0077b5;
+        color: white;
+    }
+    .social-links a.btn-outline-info:hover {
+        background: #1da1f2;
+        border-color: #1da1f2;
+        color: white;
+    }
+    .social-links a.btn-outline-danger:hover {
+        background: #e4405f;
+        border-color: #e4405f;
+        color: white;
+    }
+    .social-links a.btn-outline-dark:hover {
+        background: #333;
+        border-color: #333;
+        color: white;
+    }
+    .social-links a.btn-outline-success:hover {
+        background: #10b981;
+        border-color: #10b981;
+        color: white;
     }
 </style>
 @endpush

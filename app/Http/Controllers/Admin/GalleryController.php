@@ -31,24 +31,44 @@ class GalleryController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'file_path' => 'required|file|max:10240', // Max 10MB
-            'type' => 'required|in:image,video',
-            'category' => 'nullable|string|max:255',
-            'is_featured' => 'boolean',
-            'order' => 'nullable|integer',
-        ]);
+        try {
+            // Base validation
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'type' => 'required|in:image,video',
+                'category' => 'nullable|string|max:255',
+                'is_featured' => 'boolean',
+                'order' => 'nullable|integer|min:0',
+            ]);
 
-        if ($request->hasFile('file_path')) {
-            $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+            // Type-specific file validation
+            if ($request->type === 'image') {
+                $request->validate([
+                    'file_path' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // Max 5MB for images
+                ]);
+            } else {
+                $request->validate([
+                    'file_path' => 'required|file|mimes:mp4,avi,mov,wmv,flv|max:20480', // Max 20MB for videos
+                ]);
+            }
+
+            $validated = $request->all();
+            $validated['is_featured'] = $request->has('is_featured');
+
+            if ($request->hasFile('file_path')) {
+                $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+            }
+
+            Gallery::create($validated);
+
+            return redirect()->route('admin.galleries.index')
+                ->with('success', 'Élément de galerie créé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la création: ' . $e->getMessage());
         }
-
-        Gallery::create($validated);
-
-        return redirect()->route('admin.galleries.index')
-            ->with('success', 'Élément de galerie créé avec succès.');
     }
 
     /**
@@ -72,27 +92,49 @@ class GalleryController extends Controller
      */
     public function update(Request $request, Gallery $gallery)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'file_path' => 'nullable|file|max:10240',
-            'type' => 'required|in:image,video',
-            'category' => 'nullable|string|max:255',
-            'is_featured' => 'boolean',
-            'order' => 'nullable|integer',
-        ]);
+        try {
+            // Base validation
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'type' => 'required|in:image,video',
+                'category' => 'nullable|string|max:255',
+                'is_featured' => 'boolean',
+                'order' => 'nullable|integer|min:0',
+            ]);
 
-        if ($request->hasFile('file_path')) {
-            if ($gallery->file_path) {
-                Storage::disk('public')->delete($gallery->file_path);
+            // Type-specific file validation if uploading new file
+            if ($request->hasFile('file_path')) {
+                if ($request->type === 'image') {
+                    $request->validate([
+                        'file_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+                    ]);
+                } else {
+                    $request->validate([
+                        'file_path' => 'nullable|file|mimes:mp4,avi,mov,wmv,flv|max:20480',
+                    ]);
+                }
             }
-            $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+
+            $validated = $request->all();
+            $validated['is_featured'] = $request->has('is_featured');
+
+            if ($request->hasFile('file_path')) {
+                if ($gallery->file_path && Storage::disk('public')->exists($gallery->file_path)) {
+                    Storage::disk('public')->delete($gallery->file_path);
+                }
+                $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+            }
+
+            $gallery->update($validated);
+
+            return redirect()->route('admin.galleries.index')
+                ->with('success', 'Élément de galerie mis à jour avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la mise à jour: ' . $e->getMessage());
         }
-
-        $gallery->update($validated);
-
-        return redirect()->route('admin.galleries.index')
-            ->with('success', 'Élément de galerie mis à jour avec succès.');
     }
 
     /**
@@ -100,13 +142,18 @@ class GalleryController extends Controller
      */
     public function destroy(Gallery $gallery)
     {
-        if ($gallery->file_path) {
-            Storage::disk('public')->delete($gallery->file_path);
+        try {
+            if ($gallery->file_path && Storage::disk('public')->exists($gallery->file_path)) {
+                Storage::disk('public')->delete($gallery->file_path);
+            }
+
+            $gallery->delete();
+
+            return redirect()->route('admin.galleries.index')
+                ->with('success', 'Élément de galerie supprimé avec succès.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression: ' . $e->getMessage());
         }
-
-        $gallery->delete();
-
-        return redirect()->route('admin.galleries.index')
-            ->with('success', 'Élément de galerie supprimé avec succès.');
     }
 }

@@ -8,7 +8,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(findstr:*)",
-      "Bash(dir /B \"C:\\xampp\\htdocs\\iebc\\database\\migrations\")"
+      "Bash(dir /B \"C:\\xampp\\htdocs\\iebc\\database\\migrations\")",
+      "Bash(php -l:*)",
+      "Bash(php:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

@@ -20,6 +20,11 @@ class SettingsSeeder extends Seeder
                 'type' => 'text',
             ],
             [
+                'key' => 'company_logo',
+                'value' => asset('img/logo.png'),
+                'type' => 'text',
+            ],
+            [
                 'key' => 'site_description',
                 'value' => 'International Economics and Business Corporation (IEBC) est un cabinet économique et financier spécialisé dans le déploiement de la finance islamique en zone CEMAC et l\'accompagnement des entreprises vers la performance et la transformation digitale.',
                 'type' => 'text',
