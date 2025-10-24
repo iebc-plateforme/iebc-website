@@ -21,7 +21,7 @@ class SettingsSeeder extends Seeder
             ],
             [
                 'key' => 'company_logo',
-                'value' => '/img/logo.png', // Chemin relatif pour compatibilité multi-environnement
+                'value' => '/img/favicon.png', // Utilise favicon.png en attendant le vrai logo
                 'type' => 'text',
             ],
             [

@@ -168,7 +168,26 @@ chmod -R 775 storage/framework
 
 ---
 
-### 📌 Étape 7: Tester
+### 📌 Étape 7: Ajouter le Logo IEBC
+
+⚠️ **IMPORTANT**: Le fichier `logo.png` n'existe pas dans le projet par défaut.
+
+#### Ajouter Votre Logo:
+
+1. Via **File Manager Hostinger**:
+   - Naviguez vers `public_html/img/`
+   - Cliquez sur **Upload**
+   - Uploadez votre fichier `logo.png`
+   - Format recommandé: PNG transparent, 300x100px
+
+2. Mettre à jour la base de données:
+```sql
+UPDATE settings SET value = '/img/logo.png' WHERE `key` = 'company_logo';
+```
+
+**Note**: En attendant le vrai logo, le système utilise `favicon.png` temporairement.
+
+### 📌 Étape 8: Tester
 
 1. Ouvrez `https://iebccorporation.com/login` dans votre navigateur
 2. Le logo devrait maintenant s'afficher correctement
