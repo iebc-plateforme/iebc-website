@@ -11,7 +11,10 @@
       "Bash(dir /B \"C:\\xampp\\htdocs\\iebc\\database\\migrations\")",
       "Bash(php -l:*)",
       "Bash(php:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
