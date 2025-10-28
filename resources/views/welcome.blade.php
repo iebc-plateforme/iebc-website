@@ -49,7 +49,7 @@
                     $logo = \App\Models\Setting::get('logo');
                 @endphp
                 @if($logo)
-                    <img src="{{ asset('storage/' . $logo) }}" alt="{{ \App\Models\Setting::get('site_name') }}" class="img-fluid hero-logo">
+                    <img src="{{ image_url($logo) }}" alt="{{ \App\Models\Setting::get('site_name') }}" class="img-fluid hero-logo">
                 @else
                     <div class="hero-logo-placeholder">
                         <i class="fas fa-building fa-10x text-white opacity-75"></i>
@@ -163,7 +163,7 @@
                     <div class="card h-100 border-0 shadow-sm service-card">
                         @if($service->icon)
                             <div class="card-img-top text-center p-4 bg-gradient-light">
-                                <img src="{{ asset('storage/' . $service->icon) }}" alt="{{ $service->title }}" class="img-fluid service-icon" style="max-height: 80px;">
+                                <img src="{{ image_url($service->icon) }}" alt="{{ $service->title }}" class="img-fluid service-icon" style="max-height: 80px;">
                             </div>
                         @else
                             <div class="card-img-top text-center p-4 bg-gradient-light">
@@ -215,7 +215,7 @@
                     <div class="card h-100 border-0 shadow-sm blog-card">
                         @if($post->image)
                             <div class="blog-img-wrapper">
-                                <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top" alt="{{ $post->title }}">
+                                <img src="{{ image_url($post->image) }}" class="card-img-top" alt="{{ $post->title }}">
                                 <div class="blog-overlay"></div>
                             </div>
                         @else
@@ -270,7 +270,7 @@
                     <div class="card h-100 border-0 shadow-sm text-center team-card">
                         <div class="team-img-wrapper">
                             @if($member->photo)
-                                <img src="{{ asset('storage/' . $member->photo) }}" class="card-img-top" alt="{{ $member->name }}">
+                                <img src="{{ image_url($member->photo) }}" class="card-img-top" alt="{{ $member->name }}">
                             @else
                                 <div class="card-img-top bg-gradient-light d-flex align-items-center justify-content-center" style="height: 250px;">
                                     <i class="fas fa-user fa-4x text-muted"></i>

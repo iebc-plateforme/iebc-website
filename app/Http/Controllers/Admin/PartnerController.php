@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Partner;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Helpers\ImageHelper;
 
 class PartnerController extends Controller
 {
@@ -55,7 +55,7 @@ class PartnerController extends Controller
             $validated['is_active'] = $request->has('is_active');
 
             if ($request->hasFile('logo')) {
-                $validated['logo'] = $request->file('logo')->store('partners', 'public');
+                $validated['logo'] = ImageHelper::storePublic($request->file('logo'), 'partners');
             }
 
             Partner::create($validated);
@@ -114,10 +114,10 @@ class PartnerController extends Controller
 
             if ($request->hasFile('logo')) {
                 // Suppression de l'ancien logo si un nouveau est téléchargé
-                if ($partner->logo && Storage::disk('public')->exists($partner->logo)) {
-                    Storage::disk('public')->delete($partner->logo);
+                if ($partner->logo) {
+                    ImageHelper::deletePublic($partner->logo);
                 }
-                $validated['logo'] = $request->file('logo')->store('partners', 'public');
+                $validated['logo'] = ImageHelper::storePublic($request->file('logo'), 'partners');
             }
 
             $partner->update($validated);
@@ -138,8 +138,8 @@ class PartnerController extends Controller
     {
         try {
             // Supprimer le logo associé
-            if ($partner->logo && Storage::disk('public')->exists($partner->logo)) {
-                Storage::disk('public')->delete($partner->logo);
+            if ($partner->logo) {
+                ImageHelper::deletePublic($partner->logo);
             }
 
             $partner->delete();

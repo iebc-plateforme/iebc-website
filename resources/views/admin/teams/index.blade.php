@@ -37,7 +37,7 @@
                                 <td>{{ $member->id }}</td>
                                 <td>
                                     @if($member->photo)
-                                        <img src="{{ asset('storage/' . $member->photo) }}" alt="{{ $member->name }}"
+                                        <img src="{{ image_url($member->photo) }}" alt="{{ $member->name }}"
                                              style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                                     @else
                                         <i class="fas fa-user-circle fa-2x text-muted"></i>

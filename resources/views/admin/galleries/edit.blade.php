@@ -51,7 +51,7 @@
                         @if($gallery->file_path)
                             <p class="mb-2">Fichier actuel : 
                                 @if($gallery->type === 'image')
-                                    <img src="{{ asset('storage/' . $gallery->file_path) }}" style="max-width: 50px; max-height: 50px; object-fit: cover;">
+                                    <img src="{{ image_url($gallery->file_path) }}" style="max-width: 50px; max-height: 50px; object-fit: cover;">
                                 @else
                                     <i class="fas fa-file-alt text-info"></i> {{ basename($gallery->file_path) }}
                                 @endif

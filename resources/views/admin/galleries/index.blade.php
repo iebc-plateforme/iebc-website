@@ -36,7 +36,7 @@
                                 <td>{{ $item->id }}</td>
                                 <td>
                                     @if($item->file_path && $item->type === 'image')
-                                        <img src="{{ asset('storage/' . $item->file_path) }}" alt="{{ $item->title }}"
+                                        <img src="{{ image_url($item->file_path) }}" alt="{{ $item->title }}"
                                              style="width: 50px; height: 50px; object-fit: cover;">
                                     @elseif($item->file_path && $item->type === 'video')
                                         <i class="fas fa-video fa-2x text-primary"></i>

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Team;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Helpers\ImageHelper;
 
 class TeamController extends Controller
 {
@@ -62,7 +62,7 @@ class TeamController extends Controller
             $validated['is_active'] = $request->has('is_active');
 
             if ($request->hasFile('photo')) {
-                $validated['photo'] = $request->file('photo')->store('teams', 'public');
+                $validated['photo'] = ImageHelper::storePublic($request->file('photo'), 'teams');
             }
 
             Team::create($validated);
@@ -127,10 +127,10 @@ class TeamController extends Controller
             $validated['is_active'] = $request->has('is_active');
 
             if ($request->hasFile('photo')) {
-                if ($team->photo && Storage::disk('public')->exists($team->photo)) {
-                    Storage::disk('public')->delete($team->photo);
+                if ($team->photo) {
+                    ImageHelper::deletePublic($team->photo);
                 }
-                $validated['photo'] = $request->file('photo')->store('teams', 'public');
+                $validated['photo'] = ImageHelper::storePublic($request->file('photo'), 'teams');
             }
 
             $team->update($validated);
@@ -150,8 +150,8 @@ class TeamController extends Controller
     public function destroy(Team $team)
     {
         try {
-            if ($team->photo && Storage::disk('public')->exists($team->photo)) {
-                Storage::disk('public')->delete($team->photo);
+            if ($team->photo) {
+                ImageHelper::deletePublic($team->photo);
             }
 
             $team->delete();

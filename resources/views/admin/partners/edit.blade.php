@@ -35,7 +35,7 @@
                 <label for="logo" class="form-label">Logo / Image</label>
                 @if($partner->logo)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}"
+                        <img src="{{ image_url($partner->logo) }}" alt="{{ $partner->name }}"
                              style="max-width: 100px; max-height: 100px; object-fit: contain;">
                     </div>
                 @endif

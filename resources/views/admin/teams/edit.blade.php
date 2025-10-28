@@ -44,7 +44,7 @@
                 <label for="photo" class="form-label">Photo du Membre</label>
                 @if($team->photo)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/' . $team->photo) }}" alt="{{ $team->name }}"
+                        <img src="{{ image_url($team->photo) }}" alt="{{ $team->name }}"
                              style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 50%;">
                     </div>
                 @endif

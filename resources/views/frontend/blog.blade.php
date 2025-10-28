@@ -29,7 +29,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 border-0 shadow-sm hover-card">
                             @if($post->image)
-                                <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top" alt="{{ $post->title }}" style="height: 200px; object-fit: cover;">
+                                <img src="{{ image_url($post->image) }}" class="card-img-top" alt="{{ $post->title }}" style="height: 200px; object-fit: cover;">
                             @else
                                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                                     <i class="fas fa-image fa-3x text-muted"></i>

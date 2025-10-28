@@ -18,7 +18,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @if(\App\Models\Setting::get('logo'))
-    <link rel="apple-touch-icon" href="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
+    <link rel="apple-touch-icon" href="{{ image_url(\App\Models\Setting::get('logo')) }}">
     @endif
 
     <!-- Open Graph / Facebook -->
@@ -29,7 +29,7 @@
     <meta property="og:site_name" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
     <meta property="og:locale" content="fr_FR">
     @if(\App\Models\Setting::get('logo'))
-    <meta property="og:image" content="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
+    <meta property="og:image" content="{{ image_url(\App\Models\Setting::get('logo')) }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }} Logo">
@@ -40,7 +40,7 @@
     <meta name="twitter:title" content="@yield('title', \App\Models\Setting::get('site_name', 'IEBC SARL'))">
     <meta name="twitter:description" content="@yield('description', \App\Models\Setting::get('site_description'))">
     @if(\App\Models\Setting::get('logo'))
-    <meta name="twitter:image" content="{{ asset('storage/' . \App\Models\Setting::get('logo')) }}">
+    <meta name="twitter:image" content="{{ image_url(\App\Models\Setting::get('logo')) }}">
     @endif
 
     <!-- Bootstrap CSS -->
@@ -312,7 +312,7 @@
                 @endphp
 
                 @if($logo)
-                    <img src="{{ asset('storage/' . $logo) }}" alt="{{ $siteName }}">
+                    <img src="{{ image_url($logo) }}" alt="{{ $siteName }}">
                 @endif
                 {{ $siteName }}
             </a>
@@ -477,7 +477,7 @@
       "@type": "Organization",
       "name": "{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}",
       "url": "{{ url('/') }}",
-      "logo": "{{ \App\Models\Setting::get('logo') ? asset('storage/' . \App\Models\Setting::get('logo')) : '' }}",
+      "logo": "{{ \App\Models\Setting::get('logo') ? image_url(\App\Models\Setting::get('logo')) : '' }}",
       "description": "{{ \App\Models\Setting::get('site_description', 'International Economics and Business Corporation') }}",
       "address": {
         "@type": "PostalAddress",

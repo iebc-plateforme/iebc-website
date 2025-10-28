@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class SettingController extends Controller
 {
@@ -41,10 +41,10 @@ class SettingController extends Controller
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $oldLogo = Setting::get('company_logo');
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
+            if ($oldLogo) {
+                ImageHelper::deletePublic($oldLogo);
             }
-            $logoPath = $request->file('logo')->store('settings', 'public');
+            $logoPath = ImageHelper::storePublic($request->file('logo'), 'settings');
             Setting::set('company_logo', $logoPath, 'file');
             unset($validated['logo']); // Remove from batch save
         }
@@ -52,14 +52,14 @@ class SettingController extends Controller
         // Handle favicon upload
         if ($request->hasFile('favicon')) {
             $oldFavicon = Setting::get('site_favicon');
-            if ($oldFavicon && Storage::disk('public')->exists($oldFavicon)) {
-                Storage::disk('public')->delete($oldFavicon);
+            if ($oldFavicon) {
+                ImageHelper::deletePublic($oldFavicon);
             }
-            $faviconPath = $request->file('favicon')->store('settings', 'public');
+            $faviconPath = ImageHelper::storePublic($request->file('favicon'), 'settings');
             Setting::set('site_favicon', $faviconPath, 'file');
 
             // Copy to public root as favicon.ico
-            $faviconFullPath = storage_path('app/public/' . $faviconPath);
+            $faviconFullPath = public_path($faviconPath);
             if (file_exists($faviconFullPath)) {
                 copy($faviconFullPath, public_path('favicon.ico'));
             }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class ServiceController extends Controller
 {
@@ -56,7 +56,7 @@ class ServiceController extends Controller
             $service->is_active = $request->has('is_active');
 
             if ($request->hasFile('icon')) {
-                $service->icon = $request->file('icon')->store('icons', 'public');
+                $service->icon = ImageHelper::storePublic($request->file('icon'), 'icons');
             }
 
             $service->save();
@@ -116,13 +116,13 @@ class ServiceController extends Controller
 
             if ($request->hasFile('icon')) {
                 // Delete old icon if exists
-                if ($service->icon && Storage::disk('public')->exists($service->icon)) {
-                    Storage::disk('public')->delete($service->icon);
+                if ($service->icon) {
+                    ImageHelper::deletePublic($service->icon);
                 }
-                $service->icon = $request->file('icon')->store('icons', 'public');
+                $service->icon = ImageHelper::storePublic($request->file('icon'), 'icons');
             } elseif ($request->boolean('remove_icon')) {
-                if ($service->icon && Storage::disk('public')->exists($service->icon)) {
-                    Storage::disk('public')->delete($service->icon);
+                if ($service->icon) {
+                    ImageHelper::deletePublic($service->icon);
                     $service->icon = null;
                 }
             }
@@ -143,8 +143,8 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         try {
-            if ($service->icon && Storage::disk('public')->exists($service->icon)) {
-                Storage::disk('public')->delete($service->icon);
+            if ($service->icon) {
+                ImageHelper::deletePublic($service->icon);
             }
             $service->delete();
             return redirect()->route('admin.services.index')->with('success', 'Service supprimé avec succès.');

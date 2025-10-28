@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-4">
                 @if($service->icon)
-                    <img src="{{ asset('storage/' . $service->icon) }}" alt="{{ $service->title }}" class="img-fluid rounded">
+                    <img src="{{ image_url($service->icon) }}" alt="{{ $service->title }}" class="img-fluid rounded">
                 @else
                     <i class="fas fa-image fa-5x text-muted"></i>
                 @endif

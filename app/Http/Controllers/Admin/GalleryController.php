@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Helpers\ImageHelper;
 
 class GalleryController extends Controller
 {
@@ -57,7 +57,7 @@ class GalleryController extends Controller
             $validated['is_featured'] = $request->has('is_featured');
 
             if ($request->hasFile('file_path')) {
-                $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+                $validated['file_path'] = ImageHelper::storePublic($request->file('file_path'), 'galleries');
             }
 
             Gallery::create($validated);
@@ -120,10 +120,10 @@ class GalleryController extends Controller
             $validated['is_featured'] = $request->has('is_featured');
 
             if ($request->hasFile('file_path')) {
-                if ($gallery->file_path && Storage::disk('public')->exists($gallery->file_path)) {
-                    Storage::disk('public')->delete($gallery->file_path);
+                if ($gallery->file_path) {
+                    ImageHelper::deletePublic($gallery->file_path);
                 }
-                $validated['file_path'] = $request->file('file_path')->store('galleries', 'public');
+                $validated['file_path'] = ImageHelper::storePublic($request->file('file_path'), 'galleries');
             }
 
             $gallery->update($validated);
@@ -143,8 +143,8 @@ class GalleryController extends Controller
     public function destroy(Gallery $gallery)
     {
         try {
-            if ($gallery->file_path && Storage::disk('public')->exists($gallery->file_path)) {
-                Storage::disk('public')->delete($gallery->file_path);
+            if ($gallery->file_path) {
+                ImageHelper::deletePublic($gallery->file_path);
             }
 
             $gallery->delete();

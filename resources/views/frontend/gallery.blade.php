@@ -29,11 +29,11 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="gallery-item">
                             @if($item->type === 'image')
-                                <img src="{{ asset('storage/' . $item->file_path) }}" class="img-fluid rounded" alt="{{ $item->title }}">
+                                <img src="{{ image_url($item->file_path) }}" class="img-fluid rounded" alt="{{ $item->title }}">
                             @else
                                 <div class="video-container">
                                     <video controls class="w-100 rounded">
-                                        <source src="{{ asset('storage/' . $item->file_path) }}" type="video/mp4">
+                                        <source src="{{ image_url($item->file_path) }}" type="video/mp4">
                                         Votre navigateur ne supporte pas la vidéo.
                                     </video>
                                 </div>

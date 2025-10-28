@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Helpers\ImageHelper;
 
 class PostController extends Controller
 {
@@ -58,7 +58,7 @@ class PostController extends Controller
             $validated['is_published'] = $request->has('is_published');
 
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('posts', 'public');
+                $validated['image'] = ImageHelper::storePublic($request->file('image'), 'posts');
             }
 
             Post::create($validated);
@@ -118,10 +118,10 @@ class PostController extends Controller
             $validated['is_published'] = $request->has('is_published');
 
             if ($request->hasFile('image')) {
-                if ($post->image && Storage::disk('public')->exists($post->image)) {
-                    Storage::disk('public')->delete($post->image);
+                if ($post->image) {
+                    ImageHelper::deletePublic($post->image);
                 }
-                $validated['image'] = $request->file('image')->store('posts', 'public');
+                $validated['image'] = ImageHelper::storePublic($request->file('image'), 'posts');
             }
 
             $post->update($validated);
@@ -141,8 +141,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         try {
-            if ($post->image && Storage::disk('public')->exists($post->image)) {
-                Storage::disk('public')->delete($post->image);
+            if ($post->image) {
+                ImageHelper::deletePublic($post->image);
             }
 
             $post->delete();

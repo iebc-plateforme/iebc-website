@@ -30,7 +30,7 @@
                         <div class="partner-card text-center">
                             <a href="{{ $partner->website }}" target="_blank" rel="noopener" class="partner-link">
                                 @if($partner->logo)
-                                    <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}" class="img-fluid partner-logo">
+                                    <img src="{{ image_url($partner->logo) }}" alt="{{ $partner->name }}" class="img-fluid partner-logo">
                                 @else
                                     <div class="partner-placeholder">
                                         <i class="fas fa-building fa-3x text-muted"></i>

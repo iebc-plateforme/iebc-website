@@ -32,7 +32,7 @@
                         <div class="card h-100 border-0 shadow-sm hover-card">
                             @if($service->icon)
                                 <div class="card-img-top text-center p-4 bg-light">
-                                    <img src="{{ asset('storage/' . $service->icon) }}"
+                                    <img src="{{ image_url($service->icon) }}"
                                          alt="{{ $service->title }}"
                                          class="img-fluid"
                                          style="max-height: 150px; object-fit: contain;">

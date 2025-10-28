@@ -28,11 +28,11 @@
                     <meta itemprop="dateModified" content="{{ $post->updated_at->toIso8601String() }}">
                     <meta itemprop="author" content="{{ $post->user->name ?? 'IEBC' }}">
                     @if($post->image)
-                        <meta itemprop="image" content="{{ asset('storage/' . $post->image) }}">
+                        <meta itemprop="image" content="{{ image_url($post->image) }}">
                     @endif
 
                     @if($post->image)
-                        <img src="{{ asset('storage/' . $post->image) }}" class="img-fluid rounded mb-4" alt="{{ $post->title }}" itemprop="image">
+                        <img src="{{ image_url($post->image) }}" class="img-fluid rounded mb-4" alt="{{ $post->title }}" itemprop="image">
                     @endif
 
                     <div class="post-meta mb-4">
@@ -99,7 +99,7 @@
                                 <div class="col-md-4">
                                     <div class="card border-0 shadow-sm h-100 hover-lift">
                                         @if($related->image)
-                                            <img src="{{ asset('storage/' . $related->image) }}" class="card-img-top" alt="{{ $related->title }}" style="height: 150px; object-fit: cover;">
+                                            <img src="{{ image_url($related->image) }}" class="card-img-top" alt="{{ $related->title }}" style="height: 150px; object-fit: cover;">
                                         @else
                                             <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
                                                 <i class="fas fa-newspaper fa-3x text-muted"></i>
@@ -238,7 +238,7 @@
   "@type": "BlogPosting",
   "headline": "{{ $post->title }}",
   "description": "{{ Str::limit($post->excerpt ?? strip_tags($post->content), 160) }}",
-  "image": "{{ $post->image ? asset('storage/' . $post->image) : asset('storage/' . \App\Models\Setting::get('logo')) }}",
+  "image": "{{ $post->image ? image_url($post->image) : image_url(\App\Models\Setting::get('logo')) }}",
   "datePublished": "{{ $post->published_at->toIso8601String() }}",
   "dateModified": "{{ $post->updated_at->toIso8601String() }}",
   "author": {
@@ -250,7 +250,7 @@
     "name": "{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ asset('storage/' . \App\Models\Setting::get('logo')) }}"
+      "url": "{{ image_url(\App\Models\Setting::get('logo')) }}"
     }
   },
   "mainEntityOfPage": {

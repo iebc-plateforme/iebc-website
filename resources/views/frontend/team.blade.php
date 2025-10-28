@@ -29,7 +29,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 border-0 shadow-sm text-center team-card">
                             @if($member->photo)
-                                <img src="{{ asset('storage/' . $member->photo) }}" class="card-img-top" alt="{{ $member->name }}" style="height: 300px; object-fit: cover;">
+                                <img src="{{ image_url($member->photo) }}" class="card-img-top" alt="{{ $member->name }}" style="height: 300px; object-fit: cover;">
                             @else
                                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
                                     <i class="fas fa-user fa-5x text-muted"></i>

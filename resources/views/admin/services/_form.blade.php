@@ -22,7 +22,7 @@
     @enderror
     @if(isset($service) && $service->icon)
         <div class="mt-2">
-            <img src="{{ asset('storage/' . $service->icon) }}" alt="{{ $service->title }}" style="width: 100px; height: 100px; object-fit: cover;">
+            <img src="{{ image_url($service->icon) }}" alt="{{ $service->title }}" style="width: 100px; height: 100px; object-fit: cover;">
             <div class="form-check mt-2">
                 <input type="checkbox" class="form-check-input" id="remove_icon" name="remove_icon" value="1">
                 <label class="form-check-label" for="remove_icon">Supprimer l'icône existante</label>

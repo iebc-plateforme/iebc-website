@@ -73,7 +73,7 @@
                 <label for="image" class="form-label">Image de Couverture</label>
                 @if($post->image)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}"
+                        <img src="{{ image_url($post->image) }}" alt="{{ $post->title }}"
                              class="img-thumbnail" style="max-width: 300px; max-height: 200px; object-fit: cover;">
                     </div>
                 @endif

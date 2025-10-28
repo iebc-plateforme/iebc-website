@@ -38,7 +38,7 @@
                                 <td>{{ $post->user->name ?? 'N/A' }}</td> {{-- Supposons une relation user --}}
                                 <td>
                                     @if($post->image)
-                                        <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}"
+                                        <img src="{{ image_url($post->image) }}" alt="{{ $post->title }}"
                                              style="width: 60px; height: 40px; object-fit: cover;">
                                     @else
                                         <i class="fas fa-image text-muted"></i>

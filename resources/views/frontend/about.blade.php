@@ -24,7 +24,7 @@
                     $logo = \App\Models\Setting::get('logo');
                 @endphp
                 @if($logo)
-                    <img src="{{ asset('storage/' . $logo) }}" alt="{{ \App\Models\Setting::get('site_name') }}" class="img-fluid rounded shadow-lg">
+                    <img src="{{ image_url($logo) }}" alt="{{ \App\Models\Setting::get('site_name') }}" class="img-fluid rounded shadow-lg">
                 @else
                     <div class="bg-light p-5 rounded text-center">
                         <i class="fas fa-building fa-10x text-primary"></i>
@@ -78,7 +78,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="card border-0 shadow-sm text-center team-card h-100">
                             @if($member->photo)
-                                <img src="{{ asset('storage/' . $member->photo) }}" class="card-img-top" alt="{{ $member->name }}" style="height: 250px; object-fit: cover;">
+                                <img src="{{ image_url($member->photo) }}" class="card-img-top" alt="{{ $member->name }}" style="height: 250px; object-fit: cover;">
                             @else
                                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
                                     <i class="fas fa-user fa-4x text-muted"></i>

@@ -37,7 +37,7 @@
                                 <td>{{ $partner->name }}</td>
                                 <td>
                                     @if($partner->logo)
-                                        <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}"
+                                        <img src="{{ image_url($partner->logo) }}" alt="{{ $partner->name }}"
                                              style="width: 40px; height: 40px; object-fit: contain;">
                                     @else
                                         <i class="fas fa-image text-muted"></i>

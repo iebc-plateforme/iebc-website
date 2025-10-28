@@ -33,7 +33,7 @@
                                 <td>{{ $service->title }}</td>
                                 <td>
                                     @if($service->icon)
-                                        <img src="{{ asset('storage/' . $service->icon) }}" alt="{{ $service->title }}"
+                                        <img src="{{ image_url($service->icon) }}" alt="{{ $service->title }}"
                                              style="width: 40px; height: 40px; object-fit: cover;">
                                     @else
                                         <i class="fas fa-image text-muted"></i>
