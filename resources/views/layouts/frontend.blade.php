@@ -14,6 +14,22 @@
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
 
+    <!-- Geo-Targeting Meta Tags (Update these with actual business location) -->
+    @if(\App\Models\Setting::get('business_country'))
+    <meta name="geo.region" content="{{ \App\Models\Setting::get('business_country') }}">
+    @endif
+    @if(\App\Models\Setting::get('business_city'))
+    <meta name="geo.placename" content="{{ \App\Models\Setting::get('business_city') }}">
+    @endif
+    @if(\App\Models\Setting::get('business_latitude') && \App\Models\Setting::get('business_longitude'))
+    <meta name="geo.position" content="{{ \App\Models\Setting::get('business_latitude') }};{{ \App\Models\Setting::get('business_longitude') }}">
+    <meta name="ICBM" content="{{ \App\Models\Setting::get('business_latitude') }}, {{ \App\Models\Setting::get('business_longitude') }}">
+    @endif
+
+    <!-- Language/Region Targeting -->
+    <meta property="og:locale" content="fr_FR">
+    <link rel="alternate" hreflang="fr" href="{{ url()->current() }}" />
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -592,6 +608,63 @@
       ]
     }
     </script>
+
+    <!-- JSON-LD LocalBusiness Schema (Critical for Local SEO & Google Maps) -->
+    @if(Request::is('/'))
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}",
+      "image": "{{ \App\Models\Setting::get('logo') ? image_url(\App\Models\Setting::get('logo')) : '' }}",
+      "description": "{{ \App\Models\Setting::get('site_description', 'International Economics and Business Corporation') }}",
+      "@id": "{{ url('/') }}",
+      "url": "{{ url('/') }}",
+      "telephone": "{{ \App\Models\Setting::get('contact_phone', '') }}",
+      "email": "{{ \App\Models\Setting::get('contact_email', '') }}",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ \App\Models\Setting::get('business_street_address', '') }}",
+        "addressLocality": "{{ \App\Models\Setting::get('business_city', '') }}",
+        "addressRegion": "{{ \App\Models\Setting::get('business_region', '') }}",
+        "postalCode": "{{ \App\Models\Setting::get('business_postal_code', '') }}",
+        "addressCountry": "{{ \App\Models\Setting::get('business_country', 'CD') }}"
+      }@if(\App\Models\Setting::get('business_latitude') && \App\Models\Setting::get('business_longitude')),
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": {{ \App\Models\Setting::get('business_latitude', '0') }},
+        "longitude": {{ \App\Models\Setting::get('business_longitude', '0') }}
+      }@endif@if(\App\Models\Setting::get('business_hours')),
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "{{ \App\Models\Setting::get('business_opens', '09:00') }}",
+        "closes": "{{ \App\Models\Setting::get('business_closes', '18:00') }}"
+      }@endif,
+      "sameAs": [
+        @if(\App\Models\Setting::get('facebook_url'))
+        "{{ \App\Models\Setting::get('facebook_url') }}"@if(\App\Models\Setting::get('twitter_url') || \App\Models\Setting::get('linkedin_url') || \App\Models\Setting::get('instagram_url')),@endif
+        @endif
+        @if(\App\Models\Setting::get('twitter_url'))
+        "{{ \App\Models\Setting::get('twitter_url') }}"@if(\App\Models\Setting::get('linkedin_url') || \App\Models\Setting::get('instagram_url')),@endif
+        @endif
+        @if(\App\Models\Setting::get('linkedin_url'))
+        "{{ \App\Models\Setting::get('linkedin_url') }}"@if(\App\Models\Setting::get('instagram_url')),@endif
+        @endif
+        @if(\App\Models\Setting::get('instagram_url'))
+        "{{ \App\Models\Setting::get('instagram_url') }}"
+        @endif
+      ]
+    }
+    </script>
+    @endif
 
     <!-- JSON-LD Breadcrumb for non-homepage -->
     @if(!Request::is('/'))

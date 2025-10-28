@@ -116,13 +116,20 @@ class SitemapController extends Controller
      */
     public function robots()
     {
-        $robotsTxt = "User-agent: *\n";
+        $robotsTxt = "# robots.txt for " . config('app.name') . "\n";
+        $robotsTxt .= "# Generated dynamically\n\n";
+
+        $robotsTxt .= "User-agent: *\n";
         $robotsTxt .= "Allow: /\n";
         $robotsTxt .= "Disallow: /back-end-iebc/\n";
         $robotsTxt .= "Disallow: /admin/\n";
         $robotsTxt .= "Disallow: /login\n";
         $robotsTxt .= "Disallow: /register\n";
+        $robotsTxt .= "Disallow: /password/\n";
+        $robotsTxt .= "Disallow: /profile\n";
         $robotsTxt .= "\n";
+
+        $robotsTxt .= "# Sitemap location\n";
         $robotsTxt .= "Sitemap: " . url('/sitemap.xml') . "\n";
 
         return response($robotsTxt, 200)
