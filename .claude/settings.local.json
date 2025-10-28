@@ -14,7 +14,10 @@
       "Bash(dir:*)",
       "Bash(test:*)",
       "Bash(cp:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(timeout 5 bash:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
