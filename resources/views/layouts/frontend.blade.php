@@ -630,12 +630,15 @@
         "addressRegion": "{{ \App\Models\Setting::get('business_region', '') }}",
         "postalCode": "{{ \App\Models\Setting::get('business_postal_code', '') }}",
         "addressCountry": "{{ \App\Models\Setting::get('business_country', 'CD') }}"
-      }@if(\App\Models\Setting::get('business_latitude') && \App\Models\Setting::get('business_longitude')),
+      },
+      @if(\App\Models\Setting::get('business_latitude') && \App\Models\Setting::get('business_longitude'))
       "geo": {
         "@type": "GeoCoordinates",
         "latitude": {{ \App\Models\Setting::get('business_latitude', '0') }},
         "longitude": {{ \App\Models\Setting::get('business_longitude', '0') }}
-      }@endif@if(\App\Models\Setting::get('business_hours')),
+      },
+      @endif
+      @if(\App\Models\Setting::get('business_hours'))
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": [
@@ -647,20 +650,23 @@
         ],
         "opens": "{{ \App\Models\Setting::get('business_opens', '09:00') }}",
         "closes": "{{ \App\Models\Setting::get('business_closes', '18:00') }}"
-      }@endif,
+      },
+      @endif
       "sameAs": [
+        @php $socialLinks = []; @endphp
         @if(\App\Models\Setting::get('facebook_url'))
-        "{{ \App\Models\Setting::get('facebook_url') }}"@if(\App\Models\Setting::get('twitter_url') || \App\Models\Setting::get('linkedin_url') || \App\Models\Setting::get('instagram_url')),@endif
+          @php $socialLinks[] = \App\Models\Setting::get('facebook_url'); @endphp
         @endif
         @if(\App\Models\Setting::get('twitter_url'))
-        "{{ \App\Models\Setting::get('twitter_url') }}"@if(\App\Models\Setting::get('linkedin_url') || \App\Models\Setting::get('instagram_url')),@endif
+          @php $socialLinks[] = \App\Models\Setting::get('twitter_url'); @endphp
         @endif
         @if(\App\Models\Setting::get('linkedin_url'))
-        "{{ \App\Models\Setting::get('linkedin_url') }}"@if(\App\Models\Setting::get('instagram_url')),@endif
+          @php $socialLinks[] = \App\Models\Setting::get('linkedin_url'); @endphp
         @endif
         @if(\App\Models\Setting::get('instagram_url'))
-        "{{ \App\Models\Setting::get('instagram_url') }}"
+          @php $socialLinks[] = \App\Models\Setting::get('instagram_url'); @endphp
         @endif
+        {!! '"' . implode('","', $socialLinks) . '"' !!}
       ]
     }
     </script>
