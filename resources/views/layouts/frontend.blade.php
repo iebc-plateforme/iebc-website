@@ -140,11 +140,42 @@
             font-weight: 700;
             font-size: 1.5rem;
             color: var(--primary-color) !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
         }
 
         .navbar-brand img {
-            max-height: 50px;
-            margin-right: 10px;
+            max-height: 60px;
+            width: auto;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+        }
+
+        .navbar-brand-text {
+            display: inline-flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .navbar-brand-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .navbar-brand-tagline {
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            opacity: 0.8;
         }
 
         .nav-link {
@@ -366,12 +397,22 @@
                 @php
                     $logo = \App\Models\Setting::get('logo');
                     $siteName = \App\Models\Setting::get('site_name', 'IEBC SARL');
+                    $tagline = \App\Models\Setting::get('site_tagline', '');
                 @endphp
 
                 @if($logo)
-                    <img src="{{ image_url($logo) }}" alt="{{ $siteName }}">
+                    <img src="{{ image_url($logo) }}" alt="{{ $siteName }} Logo" loading="eager">
+                @else
+                    <div class="navbar-logo-placeholder d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 12px; margin-right: 12px;">
+                        <i class="fas fa-building text-white" style="font-size: 1.5rem;"></i>
+                    </div>
                 @endif
-                {{ $siteName }}
+                <div class="navbar-brand-text">
+                    <span class="navbar-brand-title">{{ $siteName }}</span>
+                    @if($tagline)
+                        <span class="navbar-brand-tagline d-none d-lg-inline">{{ $tagline }}</span>
+                    @endif
+                </div>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

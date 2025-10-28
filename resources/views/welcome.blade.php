@@ -48,13 +48,19 @@
                 @php
                     $logo = \App\Models\Setting::get('logo');
                 @endphp
-                @if($logo)
-                    <img src="{{ image_url($logo) }}" alt="{{ \App\Models\Setting::get('site_name') }}" class="img-fluid hero-logo">
-                @else
-                    <div class="hero-logo-placeholder">
-                        <i class="fas fa-building fa-10x text-white opacity-75"></i>
-                    </div>
-                @endif
+                <div class="hero-logo-container">
+                    @if($logo)
+                        <div class="hero-logo-wrapper">
+                            <img src="{{ image_url($logo) }}" alt="{{ \App\Models\Setting::get('site_name') }} Logo" class="img-fluid hero-logo" loading="eager">
+                        </div>
+                    @else
+                        <div class="hero-logo-placeholder">
+                            <div class="placeholder-icon-wrapper">
+                                <i class="fas fa-building fa-10x text-white"></i>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -322,7 +328,7 @@
 <style>
     /* Hero Section */
     .hero-section {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--accent-color) 100%);
         position: relative;
         overflow: hidden;
     }
@@ -353,14 +359,79 @@
         color: white;
     }
 
-    .hero-logo {
-        max-width: 400px;
-        filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+    .hero-logo-container {
+        position: relative;
+        padding: 2rem;
+    }
+
+    .hero-logo-wrapper {
+        position: relative;
+        display: inline-block;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 30px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
         animation: float 3s ease-in-out infinite;
     }
 
+    .hero-logo-wrapper::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+        border-radius: 35px;
+        z-index: -1;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 0.5;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+    }
+
+    .hero-logo {
+        max-width: 350px;
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        transition: all 0.3s ease;
+    }
+
+    .hero-logo-wrapper:hover .hero-logo {
+        transform: scale(1.05);
+        filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.4));
+    }
+
     .hero-logo-placeholder {
+        display: inline-block;
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 30px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         animation: float 3s ease-in-out infinite;
+    }
+
+    .placeholder-icon-wrapper {
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .hero-logo-placeholder:hover .placeholder-icon-wrapper {
+        opacity: 1;
+        transform: scale(1.05);
     }
 
     @keyframes float {
@@ -423,6 +494,13 @@
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .section-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
 
     /* Stats Section */
@@ -539,7 +617,7 @@
 
     /* Finance Islamique Section */
     .bg-gradient-islamic {
-        background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #134e4a 100%);
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
     }
 
     .islamic-pattern {
@@ -571,7 +649,7 @@
 
     /* CTA Section */
     .bg-gradient-cta {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
     }
 
     .cta-pattern {
