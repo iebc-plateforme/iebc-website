@@ -35,19 +35,68 @@
             background: var(--primary-color);
             color: white;
             overflow-y: auto;
+            overflow-x: hidden;
             transition: all 0.3s;
             z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar.collapsed .logo h4,
+        .sidebar.collapsed .nav-link span,
+        .sidebar.collapsed .nav-section-title,
+        .sidebar.collapsed .badge {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-link {
+            padding: 0.75rem;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-link i {
+            margin: 0;
         }
 
         .sidebar .logo {
             padding: 1.5rem;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .sidebar .logo h4 {
             margin: 0;
             color: white;
+            font-size: 1.25rem;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+            padding: 1rem 1.5rem 0.5rem;
+            font-weight: 600;
         }
 
         .sidebar .nav-link {
@@ -55,6 +104,9 @@
             padding: 0.75rem 1.5rem;
             border-left: 3px solid transparent;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
         .sidebar .nav-link:hover,
@@ -67,6 +119,11 @@
         .sidebar .nav-link i {
             width: 20px;
             margin-right: 10px;
+            text-align: center;
+        }
+
+        .sidebar .nav-link .badge {
+            margin-left: auto;
         }
 
         .main-content {
@@ -74,6 +131,11 @@
             padding: 2rem;
             min-height: 100vh;
             background: #f8f9fa;
+            transition: margin-left 0.3s;
+        }
+
+        .main-content.sidebar-collapsed {
+            margin-left: 70px;
         }
 
         .top-navbar {
@@ -134,56 +196,87 @@
     <div class="sidebar" id="sidebar">
         <div class="logo">
             <h4>IEBC Admin</h4>
+            <button class="sidebar-toggle d-none d-lg-block" id="sidebarCollapseBtn" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
         <nav class="nav flex-column">
+            <!-- Dashboard -->
             <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
             </a>
+
+            <!-- Content Section -->
+            <div class="nav-section-title">Contenu</div>
             <a class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}" href="{{ route('admin.services.index') }}">
-                <i class="fas fa-briefcase"></i> Services
-            </a>
-            <a class="nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}" href="{{ route('admin.partners.index') }}">
-                <i class="fas fa-handshake"></i> Partenaires
-            </a>
-            <a class="nav-link {{ request()->routeIs('admin.teams.*') ? 'active' : '' }}" href="{{ route('admin.teams.index') }}">
-                <i class="fas fa-users"></i> Équipe
+                <i class="fas fa-briefcase"></i>
+                <span>Services</span>
             </a>
             <a class="nav-link {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}" href="{{ route('admin.posts.index') }}">
-                <i class="fas fa-newspaper"></i> Actualités
+                <i class="fas fa-newspaper"></i>
+                <span>Actualités</span>
             </a>
             <a class="nav-link {{ request()->routeIs('admin.galleries.*') ? 'active' : '' }}" href="{{ route('admin.galleries.index') }}">
-                <i class="fas fa-images"></i> Galerie
+                <i class="fas fa-images"></i>
+                <span>Galerie</span>
             </a>
+
+            <!-- People Section -->
+            <div class="nav-section-title">Personnes</div>
+            <a class="nav-link {{ request()->routeIs('admin.teams.*') ? 'active' : '' }}" href="{{ route('admin.teams.index') }}">
+                <i class="fas fa-users"></i>
+                <span>Équipe</span>
+            </a>
+            <a class="nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}" href="{{ route('admin.partners.index') }}">
+                <i class="fas fa-handshake"></i>
+                <span>Partenaires</span>
+            </a>
+            @if(Auth::user()->isSuperAdmin())
+                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Utilisateurs</span>
+                </a>
+            @endif
+
+            <!-- Communication Section -->
+            <div class="nav-section-title">Communication</div>
             <a class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}" href="{{ route('admin.contacts.index') }}">
-                <i class="fas fa-envelope"></i> Messages
+                <i class="fas fa-envelope"></i>
+                <span>Messages</span>
                 @php
                     $unreadCount = \App\Models\Contact::where('is_read', false)->count();
                 @endphp
                 @if($unreadCount > 0)
-                    <span class="badge bg-danger ms-2">{{ $unreadCount }}</span>
+                    <span class="badge bg-danger rounded-pill">{{ $unreadCount }}</span>
                 @endif
             </a>
-            <hr style="border-color: rgba(255,255,255,0.1);">
-            @if(Auth::user()->isSuperAdmin())
-                <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
-                    <i class="fas fa-user-shield"></i> Utilisateurs
-                </a>
-            @endif
+
+            <!-- Settings Section -->
+            <div class="nav-section-title">Configuration</div>
             <a class="nav-link {{ request()->routeIs('admin.themes.*') ? 'active' : '' }}" href="{{ route('admin.themes.index') }}">
-                <i class="fas fa-palette"></i> Thèmes
+                <i class="fas fa-palette"></i>
+                <span>Thèmes</span>
             </a>
             <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
-                <i class="fas fa-cog"></i> Paramètres
+                <i class="fas fa-cog"></i>
+                <span>Paramètres</span>
             </a>
+
+            <!-- User Section -->
+            <div class="nav-section-title">Utilisateur</div>
             <a class="nav-link {{ request()->routeIs('profile') ? 'active' : '' }}" href="{{ route('profile') }}">
-                <i class="fas fa-user-circle"></i> Mon Profil
+                <i class="fas fa-user-circle"></i>
+                <span>Mon Profil</span>
             </a>
             <a class="nav-link" href="{{ route('home') }}" target="_blank">
-                <i class="fas fa-globe"></i> Voir le site
+                <i class="fas fa-globe"></i>
+                <span>Voir le site</span>
             </a>
             <a class="nav-link" href="{{ route('logout') }}"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="fas fa-sign-out-alt"></i> Déconnexion
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
@@ -192,7 +285,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <div class="main-content" id="mainContent">
         <!-- Top Navbar -->
         <div class="top-navbar d-flex justify-content-between align-items-center">
             <div>
@@ -260,6 +353,27 @@
         // Sidebar toggle for mobile
         document.getElementById('sidebarToggle')?.addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        // Sidebar collapse for desktop
+        const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        // Load saved collapse state from localStorage
+        const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (sidebarCollapsed) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('sidebar-collapsed');
+        }
+
+        sidebarCollapseBtn?.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('sidebar-collapsed');
+
+            // Save state to localStorage
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
         });
 
         // Auto-hide alerts after 5 seconds

@@ -142,6 +142,47 @@
             color: var(--primary-color) !important;
         }
 
+        /* Dropdown Menus */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s;
+            color: var(--dark-color);
+        }
+
+        .dropdown-item:hover, .dropdown-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .dropdown-item i {
+            color: var(--primary-color);
+            transition: color 0.3s;
+        }
+
+        .dropdown-item:hover i, .dropdown-item.active i {
+            color: white;
+        }
+
+        .btn-outline-success {
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40,167,69,0.3);
+        }
+
         /* Page Header */
         .page-header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -322,53 +363,99 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <!-- Home -->
                     <li class="nav-item">
                         <a class="nav-link {{ Request::is('/') ? 'active' : '' }}" href="{{ route('welcome') }}">
-                            <i class="fas fa-home"></i> Accueil
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('services') ? 'active' : '' }}" href="{{ route('services') }}">
-                            <i class="fas fa-briefcase"></i> Services
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('blog*') ? 'active' : '' }}" href="{{ route('blog') }}">
-                            <i class="fas fa-newspaper"></i> Blog
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('equipe') ? 'active' : '' }}" href="{{ route('team') }}">
-                            <i class="fas fa-users"></i> Équipe
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('galerie') ? 'active' : '' }}" href="{{ route('gallery') }}">
-                            <i class="fas fa-images"></i> Galerie
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('partenaires') ? 'active' : '' }}" href="{{ route('partners') }}">
-                            <i class="fas fa-handshake"></i> Partenaires
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('a-propos') ? 'active' : '' }}" href="{{ route('about') }}">
-                            <i class="fas fa-info-circle"></i> À Propos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ Request::is('contact') ? 'active' : '' }}" href="{{ route('contact') }}">
-                            <i class="fas fa-envelope"></i> Contact
+                            Accueil
                         </a>
                     </li>
 
+                    <!-- About Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ Request::is('a-propos') || Request::is('equipe') ? 'active' : '' }}"
+                           href="#"
+                           id="navbarAbout"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            À Propos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarAbout">
+                            <li>
+                                <a class="dropdown-item {{ Request::is('a-propos') ? 'active' : '' }}" href="{{ route('about') }}">
+                                    <i class="fas fa-info-circle me-2"></i> Qui sommes-nous
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ Request::is('equipe') ? 'active' : '' }}" href="{{ route('team') }}">
+                                    <i class="fas fa-users me-2"></i> Notre Équipe
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Services & Partners Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ Request::is('services') || Request::is('partenaires') ? 'active' : '' }}"
+                           href="#"
+                           id="navbarServices"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Solutions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarServices">
+                            <li>
+                                <a class="dropdown-item {{ Request::is('services') ? 'active' : '' }}" href="{{ route('services') }}">
+                                    <i class="fas fa-briefcase me-2"></i> Nos Services
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ Request::is('partenaires') ? 'active' : '' }}" href="{{ route('partners') }}">
+                                    <i class="fas fa-handshake me-2"></i> Partenaires
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Resources Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ Request::is('blog*') || Request::is('galerie') ? 'active' : '' }}"
+                           href="#"
+                           id="navbarResources"
+                           role="button"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Ressources
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarResources">
+                            <li>
+                                <a class="dropdown-item {{ Request::is('blog*') ? 'active' : '' }}" href="{{ route('blog') }}">
+                                    <i class="fas fa-newspaper me-2"></i> Blog & Actualités
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ Request::is('galerie') ? 'active' : '' }}" href="{{ route('gallery') }}">
+                                    <i class="fas fa-images me-2"></i> Galerie
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Contact -->
+                    <li class="nav-item">
+                        <a class="nav-link {{ Request::is('contact') ? 'active' : '' }}" href="{{ route('contact') }}">
+                            Contact
+                        </a>
+                    </li>
+
+                    <!-- Admin Link -->
                     @auth
                         @if(Auth::user()->isAdmin())
-                            <li class="nav-item">
-                                <a class="nav-link text-success" href="{{ route('admin.dashboard') }}">
-                                    <i class="fas fa-lock"></i> Admin
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-sm btn-outline-success" href="{{ route('admin.dashboard') }}">
+                                    <i class="fas fa-lock me-1"></i> Admin
                                 </a>
                             </li>
                         @endif
