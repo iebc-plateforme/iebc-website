@@ -40,12 +40,12 @@ class SettingController extends Controller
 
         // Handle logo upload
         if ($request->hasFile('logo')) {
-            $oldLogo = Setting::get('company_logo');
+            $oldLogo = Setting::get('logo');
             if ($oldLogo) {
                 ImageHelper::deletePublic($oldLogo);
             }
             $logoPath = ImageHelper::storePublic($request->file('logo'), 'settings');
-            Setting::set('company_logo', $logoPath, 'file');
+            Setting::set('logo', $logoPath, 'file');
             unset($validated['logo']); // Remove from batch save
         }
 

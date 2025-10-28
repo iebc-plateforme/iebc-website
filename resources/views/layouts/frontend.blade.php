@@ -387,6 +387,7 @@
         }
     </style>
 
+    @stack('meta')
     @stack('styles')
 </head>
 <body>

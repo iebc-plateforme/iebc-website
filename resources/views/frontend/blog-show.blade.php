@@ -3,6 +3,65 @@
 @section('title', $post->title . ' - ' . \App\Models\Setting::get('site_name', 'IEBC SARL'))
 @section('description', Str::limit($post->excerpt ?? strip_tags($post->content), 160))
 
+@push('meta')
+    <!-- Enhanced Open Graph / Facebook Meta Tags for Blog Post -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ route('blog.show', $post->slug) }}">
+    <meta property="og:title" content="{{ $post->title }}">
+    <meta property="og:description" content="{{ Str::limit($post->excerpt ?? strip_tags($post->content), 200) }}">
+    <meta property="og:site_name" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
+    <meta property="og:locale" content="fr_FR">
+
+    @if($post->image)
+        <meta property="og:image" content="{{ url(image_url($post->image)) }}">
+        <meta property="og:image:secure_url" content="{{ url(image_url($post->image)) }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ $post->title }}">
+        <meta property="og:image:type" content="image/jpeg">
+    @else
+        @php
+            $fallbackImage = \App\Models\Setting::get('logo');
+        @endphp
+        @if($fallbackImage)
+            <meta property="og:image" content="{{ url(image_url($fallbackImage)) }}">
+            <meta property="og:image:secure_url" content="{{ url(image_url($fallbackImage)) }}">
+            <meta property="og:image:alt" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
+        @endif
+    @endif
+
+    <!-- Article Specific Meta Tags -->
+    <meta property="article:published_time" content="{{ $post->published_at->toIso8601String() }}">
+    <meta property="article:modified_time" content="{{ $post->updated_at->toIso8601String() }}">
+    @if($post->user)
+        <meta property="article:author" content="{{ $post->user->name }}">
+    @endif
+    @if($post->category)
+        <meta property="article:section" content="{{ $post->category }}">
+        <meta property="article:tag" content="{{ $post->category }}">
+    @endif
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ route('blog.show', $post->slug) }}">
+    <meta name="twitter:title" content="{{ $post->title }}">
+    <meta name="twitter:description" content="{{ Str::limit($post->excerpt ?? strip_tags($post->content), 200) }}">
+    @if($post->image)
+        <meta name="twitter:image" content="{{ url(image_url($post->image)) }}">
+        <meta name="twitter:image:alt" content="{{ $post->title }}">
+    @elseif($fallbackImage ?? false)
+        <meta name="twitter:image" content="{{ url(image_url($fallbackImage)) }}">
+        <meta name="twitter:image:alt" content="{{ \App\Models\Setting::get('site_name', 'IEBC SARL') }}">
+    @endif
+    @php
+        $twitterHandle = \App\Models\Setting::get('twitter_handle', '');
+    @endphp
+    @if($twitterHandle)
+        <meta name="twitter:site" content="{{ $twitterHandle }}">
+        <meta name="twitter:creator" content="{{ $twitterHandle }}">
+    @endif
+@endpush
+
 @section('content')
 <div class="page-header">
     <div class="container">
