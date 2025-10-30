@@ -32,10 +32,6 @@ class SettingController extends Controller
             'google_analytics_id' => 'nullable|string|max:50',
             'logo' => 'nullable|image|max:2048',
             'favicon' => 'nullable|image|mimes:ico,png|max:512',
-            'theme_primary_color' => 'nullable|string|max:7',
-            'theme_secondary_color' => 'nullable|string|max:7',
-            'theme_accent_color' => 'nullable|string|max:7',
-            'theme_font_family' => 'nullable|string|max:100',
         ]);
 
         // Handle logo upload

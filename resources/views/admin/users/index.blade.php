@@ -42,14 +42,20 @@
                         @forelse($users as $user)
                         <tr>
                             <td>
-                                <strong>{{ $user->name }}</strong>
-                                @if($user->email === 'ismailahamadou5@gmail.com')
-                                    <span class="badge bg-warning ms-2">Super Admin Principal</span>
+                                <strong>{{ $user->full_name }}</strong>
+                                @if($user->id === auth()->id())
+                                    <span class="badge bg-info ms-2">Vous</span>
                                 @endif
                             </td>
                             <td>{{ $user->email }}</td>
                             <td>
-                                @if($user->role === 'superadmin')
+                                @if($user->userRole)
+                                    @if($user->userRole->is_super_admin)
+                                        <span class="badge bg-danger">{{ $user->userRole->name }}</span>
+                                    @else
+                                        <span class="badge bg-primary">{{ $user->userRole->name }}</span>
+                                    @endif
+                                @elseif($user->role === 'superadmin')
                                     <span class="badge bg-danger">Super Administrateur</span>
                                 @else
                                     <span class="badge bg-primary">Administrateur</span>
@@ -57,25 +63,23 @@
                             </td>
                             <td>{{ $user->created_at->format('d/m/Y') }}</td>
                             <td class="text-end">
-                                @if($user->email !== 'ismailahamadou5@gmail.com')
+                                @if($user->id !== auth()->id())
                                     <a href="{{ route('admin.users.edit', $user) }}"
                                        class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-edit"></i> Modifier
                                     </a>
 
-                                    @if($user->id !== auth()->id())
-                                        <form action="{{ route('admin.users.destroy', $user) }}"
-                                              method="POST" class="d-inline"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet administrateur ?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-trash"></i> Supprimer
-                                            </button>
-                                        </form>
-                                    @endif
+                                    <form action="{{ route('admin.users.destroy', $user) }}"
+                                          method="POST" class="d-inline"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet administrateur ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </form>
                                 @else
-                                    <span class="badge bg-secondary">Protégé</span>
+                                    <span class="badge bg-secondary">Vous ne pouvez pas modifier votre propre compte</span>
                                 @endif
                             </td>
                         </tr>

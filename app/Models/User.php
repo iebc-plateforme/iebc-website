@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'last_name', 'email', 'password', 'role',
+        'name', 'last_name', 'email', 'password', 'role', 'role_id',
     ];
 
     /**
@@ -90,5 +90,69 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return in_array($this->role, ['admin', 'superadmin']);
+    }
+
+    /**
+     * Get the role relationship
+     */
+    public function userRole()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * Check if user has a specific permission
+     */
+    public function hasPermission(string $permissionSlug): bool
+    {
+        // Super admin has all permissions
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        // Check via role relationship
+        if ($this->userRole && $this->userRole->hasPermission($permissionSlug)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has any of the given permissions
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if user has all of the given permissions
+     */
+    public function hasAllPermissions(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if (!$this->hasPermission($permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Get all permissions for this user through their role
+     */
+    public function getAllPermissions()
+    {
+        if ($this->isSuperAdmin()) {
+            return Permission::all();
+        }
+
+        return $this->userRole ? $this->userRole->permissions : collect();
     }
 }

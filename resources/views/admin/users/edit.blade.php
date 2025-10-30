@@ -20,7 +20,7 @@
                         @method('PUT')
 
                         <div class="mb-3">
-                            <label for="name" class="form-label">Nom complet <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Prénom <span class="text-danger">*</span></label>
                             <input type="text"
                                    class="form-control @error('name') is-invalid @enderror"
                                    id="name"
@@ -28,6 +28,18 @@
                                    value="{{ old('name', $user->name) }}"
                                    required>
                             @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Nom de famille</label>
+                            <input type="text"
+                                   class="form-control @error('last_name') is-invalid @enderror"
+                                   id="last_name"
+                                   name="last_name"
+                                   value="{{ old('last_name', $user->last_name) }}">
+                            @error('last_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -76,15 +88,18 @@
                         <hr class="my-4">
 
                         <div class="mb-3">
-                            <label for="role" class="form-label">Rôle <span class="text-danger">*</span></label>
-                            <select class="form-select @error('role') is-invalid @enderror"
-                                    id="role"
-                                    name="role"
+                            <label for="role_id" class="form-label">Rôle <span class="text-danger">*</span></label>
+                            <select class="form-select @error('role_id') is-invalid @enderror"
+                                    id="role_id"
+                                    name="role_id"
                                     required>
-                                <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Administrateur</option>
-                                <option value="superadmin" {{ old('role', $user->role) === 'superadmin' ? 'selected' : '' }}>Super Administrateur</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('role')
+                            @error('role_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <small class="text-muted">
